@@ -1,6 +1,7 @@
 #include "pinyin_utils.h"
 #include <vector>
 #include <boost/algorithm/string.hpp>
+#include "boost/algorithm/string/case_conv.hpp"
 
 using namespace std;
 
@@ -251,9 +252,9 @@ string PinyinUtil::pinyin_segmentation(string sp_str)
     {
         if ((range_start + 2) <= sp_str.size())
         {
-            // 先切两个字符看看
+            // Try to cut two chars to test
             string cur_sp = sp_str.substr(range_start, 2);
-            if (quanpin_set.count(cvt_single_sp_to_pinyin(cur_sp)) > 0)
+            if (quanpin_set.count(cvt_single_sp_to_pinyin(boost::algorithm::to_lower_copy(cur_sp))) > 0)
             {
                 res = res + "'" + cur_sp;
                 range_start += 2;
