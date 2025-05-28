@@ -7,6 +7,7 @@
 #include <sqlite3.h>
 #include <string>
 #include <tuple>
+#include <unordered_set>
 #include <utility>
 #include <regex>
 #include <cstdlib>
@@ -22,38 +23,36 @@ vector<string> DictionaryUlPb::alpha_list{
     "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"  //
 };
 
-// clang-format off
 vector<string> DictionaryUlPb::single_han_list{
-  "啊按爱安暗阿案艾傲奥哎唉岸哀挨埃矮昂碍俺熬黯敖澳暧凹懊嗷癌肮蔼庵",
-  "把被不本边吧白别部比便并变表兵半步百办般必帮保报备八北包背布宝爸",
-  "从才此次错曾存草刺层参村藏菜彩采财操残惨策材餐侧词苍测猜肏擦匆粗",
-  "的到大地地但得得对多点当动打定第等东带电队倒道代弟度底答断达单德",
-  "嗯嗯而儿二尔饿呃恶耳恩额俄愕鹅噩娥厄峨鄂遏扼鳄蛾摁饵婀讹阿迩锷贰",
-  "放发法分风飞反非服房夫父复饭份佛福否费府防副负翻烦方付封凡仿富纷",
-  "个过国给高感光果公更关刚跟该工干哥告怪管功根各敢够官格攻古鬼观赶",
-  "或好会还后和很话回行候何海活黑红花孩火乎合换化哈华害喝黄呼皇怀忽",
-  "成长出处常吃场车城传冲楚沉陈朝持穿产除程差床初称查春察充超承船窗",
-  "就级集家经见间几进将觉军及叫机接今加解金惊竟姐剑结紧记教季击急静",
-  "看开口快空可刻苦克客况肯恐靠块狂哭卡科抗控课困孔康酷颗凯宽括款亏",
-  "来里老啦了两力连理脸龙李林路立离量流利冷落令灵刘领罗留乐梨论亮乱",
-  "吗没面明门名马美命目满魔们每妈民忙慢母梦木妹密米莫买毛默迷猛秘模",
-  "那年女难内你男哪拿南脑娘念您怒弄宁牛闹娜尼奶纳奈凝农努诺呢鸟扭耐",
-  "哦噢欧偶呕殴鸥藕区怄瓯讴沤耦喔𠙶𬉼㒖㭝㰶㸸㼴䉱䌂䌔䙔䥲䧢區吘吽嘔",
-  "平怕片跑破旁朋品派皮排拍婆飘普盘陪配扑漂碰牌偏凭批判爬拼迫骗胖炮",
-  "请去起前气其却全轻清亲强且钱奇青切千求确球期七取群器区枪权骑情秦",
-  "人然如让日入任认容若热忍仍肉弱软荣仁瑞绕扔融染惹扰燃锐润辱饶柔刃",
-  "所三色死四思算虽似斯随司送诉丝速散苏岁松孙索素赛宋森碎私塞扫宿损",
-  "他她天头同听太特它通突提题条体停团台痛调谈跳铁统推退态图叹堂土逃",
-  "是说上时神深手生事声晒实十少水师山使受屎世始失士删湿书谁谁双数啥",
-  "这中只知真长正种主住张战直重着者找转至之指站周终值整制阵准众章装",
-  "我为无问外王位文望完物万五往微武哇晚未围玩务卫威味温忘屋闻舞维吴",
-  "下小想些笑行向学新相像西先心信性许现喜象星系血血息形兴雪消显响修",
-  "一有也要以样已又意于眼用因与应原由远云音越影言衣业员夜友阳语亿元",
-  "在子自做走再最怎作总早坐字嘴则组足左造资族座责紫宗咱罪尊择昨增祖"
+    "啊按爱安暗阿案艾傲奥哎唉岸哀挨埃矮昂碍俺熬黯敖澳暧凹懊嗷癌肮蔼庵", //
+    "把被不本边吧白别部比便并变表兵半步百办般必帮保报备八北包背布宝爸", //
+    "从才此次错曾存草刺层参村藏菜彩采财操残惨策材餐侧词苍测猜肏擦匆粗", //
+    "的到大地地但得得对多点当动打定第等东带电队倒道代弟度底答断达单德", //
+    "嗯嗯而儿二尔饿呃恶耳恩额俄愕鹅噩娥厄峨鄂遏扼鳄蛾摁饵婀讹阿迩锷贰", //
+    "放发法分风飞反非服房夫父复饭份佛福否费府防副负翻烦方付封凡仿富纷", //
+    "个过国给高感光果公更关刚跟该工干哥告怪管功根各敢够官格攻古鬼观赶", //
+    "或好会还后和很话回行候何海活黑红花孩火乎合换化哈华害喝黄呼皇怀忽", //
+    "成长出处常吃场车城传冲楚沉陈朝持穿产除程差床初称查春察充超承船窗", //
+    "就级集家经见间几进将觉军及叫机接今加解金惊竟姐剑结紧记教季击急静", //
+    "看开口快空可刻苦克客况肯恐靠块狂哭卡科抗控课困孔康酷颗凯宽括款亏", //
+    "来里老啦了两力连理脸龙李林路立离量流利冷落令灵刘领罗留乐梨论亮乱", //
+    "吗没面明门名马美命目满魔们每妈民忙慢母梦木妹密米莫买毛默迷猛秘模", //
+    "那年女难内你男哪拿南脑娘念您怒弄宁牛闹娜尼奶纳奈凝农努诺呢鸟扭耐", //
+    "哦噢欧偶呕殴鸥藕区怄瓯讴沤耦喔𠙶𬉼㒖㭝㰶㸸㼴䉱䌂䌔䙔䥲䧢區吘吽嘔", //
+    "平怕片跑破旁朋品派皮排拍婆飘普盘陪配扑漂碰牌偏凭批判爬拼迫骗胖炮", //
+    "请去起前气其却全轻清亲强且钱奇青切千求确球期七取群器区枪权骑情秦", //
+    "人然如让日入任认容若热忍仍肉弱软荣仁瑞绕扔融染惹扰燃锐润辱饶柔刃", //
+    "所三色死四思算虽似斯随司送诉丝速散苏岁松孙索素赛宋森碎私塞扫宿损", //
+    "他她天头同听太特它通突提题条体停团台痛调谈跳铁统推退态图叹堂土逃", //
+    "是说上时神深手生事声晒实十少水师山使受屎世始失士删湿书谁谁双数啥", //
+    "这中只知真长正种主住张战直重着者找转至之指站周终值整制阵准众章装", //
+    "我为无问外王位文望完物万五往微武哇晚未围玩务卫威味温忘屋闻舞维吴", //
+    "下小想些笑行向学新相像西先心信性许现喜象星系血血息形兴雪消显响修", //
+    "一有也要以样已又意于眼用因与应原由远云音越影言衣业员夜友阳语亿元", //
+    "在子自做走再最怎作总早坐字嘴则组足左造资族座责紫宗咱罪尊择昨增祖"  //
 };
-// clang-format on
 
-DictionaryUlPb::DictionaryUlPb()
+DictionaryUlPb::DictionaryUlPb() : _kb_input_sequence(100), _cached_buffer(25)
 {
     ime_pinyin::im_set_max_lens(64, 32);
     bool _res = ime_pinyin::im_open_decoder(                                                    //
@@ -74,35 +73,39 @@ DictionaryUlPb::DictionaryUlPb()
 }
 
 /**
- * @brief Generate candidate list
+ * @brief Generate candidate list when not in help mode
  *
- * @param code
+ * @param pinyin_sequence
+ * @param pinyin_segmentation
  * @return vector<DictionaryUlPb::WordItem>
  */
-vector<DictionaryUlPb::WordItem> DictionaryUlPb::generate(const string code)
+vector<DictionaryUlPb::WordItem> DictionaryUlPb::generate( //
+    const string &pinyin_sequence,                         //
+    const string &pinyin_segmentation                      //
+)
 {
     std::shared_lock lock(mutex_);
     vector<DictionaryUlPb::WordItem> candidate_list;
-    if (code.size() == 0)
+    if (pinyin_sequence.size() == 0)
     {
         return candidate_list;
     }
     vector<string> code_list;
-    if (code.size() == 1)
+    if (pinyin_sequence.size() == 1)
     {
-        generate_for_single_char(candidate_list, code);
+        generate_for_single_char(candidate_list, pinyin_sequence);
     }
     else
     {
-        // Segmentation first
-        string pinyin_with_seg = PinyinUtil::pinyin_segmentation(code);
+        // Try to get from cache first
+
         vector<string> pinyin_list;
-        boost::split(pinyin_list, pinyin_with_seg, boost::is_any_of("'"));
-        // build sql for query
-        auto sql_pair = build_sql(code, pinyin_list);
+        boost::split(pinyin_list, pinyin_segmentation, boost::is_any_of("'"));
+        // Build sql for query
+        auto sql_pair = build_sql(pinyin_sequence, pinyin_list);
         string sql_str = sql_pair.first;
-        if (sql_pair.second)
-        { // need to filter
+        if (sql_pair.second) // Need to filter
+        {
             auto key_value_weight_list = select_complete_data(sql_str);
             filter_key_value_list(candidate_list, pinyin_list, key_value_weight_list);
         }
@@ -114,10 +117,214 @@ vector<DictionaryUlPb::WordItem> DictionaryUlPb::generate(const string code)
     return candidate_list;
 }
 
-vector<DictionaryUlPb::WordItem> DictionaryUlPb::generate_with_helpcodes(const string code)
+/**
+ * @brief Filter with single help code
+ *
+ * Not only the first Hanzi part, but also the last one that will be considered.
+ *   - For single Hanzi, we consider its first and last part
+ *   - For Multi Hanzi, we consider first Hanzi's first part and last Hanzi's first part
+ *
+ * e.g. 阿: 阿's helpcode is ek, when we type aae or aak, 阿 will both be filtered.
+ *      阿姨: 阿's helpcode is ek, 姨's helpcode is nr, when we type aayie or aayin, 阿姨 will both be filtered.
+ *
+ * @param candidate_list
+ * @param filtered_list
+ * @param help_code
+ */
+void DictionaryUlPb::filter_with_single_helpcode(                //
+    const std::vector<DictionaryUlPb::WordItem> &candidate_list, //
+    std::vector<DictionaryUlPb::WordItem> &filtered_list,        //
+    const std::string &help_code                                 //
+)
 {
-    vector<DictionaryUlPb::WordItem> candidate_list = generate(code);
-    return candidate_list;
+    unordered_set<string> wordSet;
+    if (PinyinUtil::count_utf8_chars(std::get<1>(candidate_list[0])) == 1)
+    {
+        /* Single Hanzi */
+        for (const auto &cand : candidate_list)
+        {
+            string word = std::get<1>(cand);
+            string firstHanChar = PinyinUtil::get_first_han_char(word);
+            if (PinyinUtil::helpcode_keymap.count(firstHanChar))
+            {
+                if (PinyinUtil::helpcode_keymap[firstHanChar][0] == help_code[0])
+                {
+                    if (wordSet.count(word))
+                    {
+                        continue;
+                    }
+                    filtered_list.push_back(cand);
+                    wordSet.insert(word);
+                }
+                if (PinyinUtil::helpcode_keymap[firstHanChar][1] == help_code[0])
+                {
+                    if (wordSet.count(word))
+                    {
+                        continue;
+                    }
+                    filtered_list.push_back(cand);
+                    wordSet.insert(word);
+                }
+            }
+        }
+    }
+    else
+    {
+        /* Multi Hanzi */
+        for (const auto &cand : candidate_list)
+        {
+            string word = std::get<1>(cand);
+            string firstHanChar = PinyinUtil::get_first_han_char(word);
+            string lastHanChar = PinyinUtil::get_last_han_char(word);
+            if (PinyinUtil::helpcode_keymap.count(firstHanChar))
+            {
+                if (PinyinUtil::helpcode_keymap[firstHanChar][0] == help_code[0])
+                {
+                    if (wordSet.count(word))
+                    {
+                        continue;
+                    }
+                    filtered_list.push_back(cand);
+                    wordSet.insert(word);
+                }
+                if (PinyinUtil::helpcode_keymap[lastHanChar][0] == help_code[0])
+                {
+                    if (wordSet.count(word))
+                    {
+                        continue;
+                    }
+                    filtered_list.push_back(cand);
+                    wordSet.insert(word);
+                }
+            }
+        }
+    }
+}
+
+/**
+ * @brief Filter with double help codes
+ *
+ * Rules:
+ *   - For single Hanzi, we consider its first and last part
+ *   - For Multi Hanzi, we consider first Hanzi's first part and last Hanzi's first part
+ *
+ * e.g. 阿: 阿's helpcode is ek, when we type aaek, 阿 will be filtered.
+ *      阿姨: 阿's helpcode is ek, 姨's helpcode is nr, when we type aayien, 阿姨 will be filtered.
+ *
+ * @param candidate_list
+ * @param filtered_list
+ * @param help_codes
+ */
+void DictionaryUlPb::filter_with_double_helpcodes(               //
+    const std::vector<DictionaryUlPb::WordItem> &candidate_list, //
+    std::vector<DictionaryUlPb::WordItem> &filtered_list,        //
+    const std::string &help_codes                                //
+)
+{
+    if (PinyinUtil::count_utf8_chars(std::get<1>(candidate_list[0])) == 1)
+    {
+        /* Single Hanzi */
+        for (const auto &cand : candidate_list)
+        {
+            string word = std::get<1>(cand);
+            string firstHanChar = PinyinUtil::get_first_han_char(word);
+            if (PinyinUtil::helpcode_keymap.count(firstHanChar))
+            {
+                if (PinyinUtil::helpcode_keymap[firstHanChar][0] == help_codes[0] &&
+                    PinyinUtil::helpcode_keymap[firstHanChar][1] == help_codes[1])
+                {
+                    filtered_list.push_back(cand);
+                }
+            }
+        }
+    }
+    else
+    {
+        /* Multi Hanzi */
+        for (const auto &cand : candidate_list)
+        {
+            string word = std::get<1>(cand);
+            string firstHanChar = PinyinUtil::get_first_han_char(word);
+            string lastHanChar = PinyinUtil::get_last_han_char(word);
+            if (PinyinUtil::helpcode_keymap.count(firstHanChar))
+            {
+                if (PinyinUtil::helpcode_keymap[firstHanChar][0] == help_codes[0] &&
+                    PinyinUtil::helpcode_keymap[lastHanChar][0] == help_codes[1])
+                {
+                    filtered_list.push_back(cand);
+                }
+            }
+        }
+    }
+}
+
+/**
+ * @brief
+ *
+ * Note: Use the help code only in standard cases—that is, when the shuangpin part is complete.
+ *
+ * @param pure_pinyin
+ * @param pure_pinyin_segmentation
+ * @param pinyin_sequence
+ * @param help_codes
+ * @return vector<DictionaryUlPb::WordItem>
+ */
+vector<DictionaryUlPb::WordItem> DictionaryUlPb::generate_with_helpcodes( //
+    const string &pure_pinyin,                                            //
+    const string &pure_pinyin_segmentation,                               //
+    const string &pinyin_sequence,                                        //
+    const string &help_codes                                              //
+)
+{
+    vector<WordItem> candidate_list = generate(pure_pinyin, pure_pinyin_segmentation);
+    vector<WordItem> filtered_list;
+    // Filter with help codes
+    if (help_codes.size() == 1)
+        filter_with_single_helpcode( //
+            candidate_list,          //
+            filtered_list,           //
+            help_codes               //
+        );
+    else if (help_codes.size() == 2)
+        filter_with_double_helpcodes( //
+            candidate_list,           //
+            filtered_list,            //
+            help_codes                //
+        );
+    return filtered_list;
+}
+
+std::string VkCodeToChar(UINT vk)
+{
+    if (vk >= 'A' && vk <= 'Z')
+    {
+        return std::string(1, char(vk + ('a' - 'A')));
+    }
+    if (vk >= '0' && vk <= '9')
+    {
+        return std::string(1, char(vk));
+    }
+    switch (vk)
+    {
+    case VK_SPACE:
+        return " ";
+    case VK_TAB:
+        return "\t";
+    case VK_RETURN:
+        return "\n";
+    default:
+        return "";
+    }
+}
+
+std::string VkSequenceToString(const UINT *vk_codes, size_t count)
+{
+    std::string result;
+    for (size_t i = 0; i < count; ++i)
+    {
+        result += VkCodeToChar(vk_codes[i]);
+    }
+    return result;
 }
 
 void DictionaryUlPb::generate_for_single_char(vector<DictionaryUlPb::WordItem> &candidate_list, string code)
@@ -131,9 +338,134 @@ void DictionaryUlPb::generate_for_single_char(vector<DictionaryUlPb::WordItem> &
     }
 }
 
-void DictionaryUlPb::filter_key_value_list(vector<DictionaryUlPb::WordItem> &candidate_list,
-                                           const vector<string> &pinyin_list,
-                                           const vector<DictionaryUlPb::WordItem> &key_value_weight_list)
+/**
+ * @brief
+ *
+ * @param vk
+ * @return int
+ */
+int DictionaryUlPb::handleVkCode(UINT vk)
+{
+    _kb_input_sequence.push_back(vk);
+    if (vk >= 'A' && vk <= 'Z')
+    {
+        _pinyin_sequence += char(vk + ('a' - 'A'));
+    }
+    else if (vk == VK_SPACE || (vk >= '9' && vk <= '9'))
+    {
+        // Clear state
+        reset_state();
+        return 0;
+    }
+    else if (vk == VK_TAB)
+    {
+        // Toggle help mode
+        if (!_is_help_mode)
+        {
+            _is_help_mode = true;
+            _help_mode_raw_pos = _pinyin_sequence.size();
+        }
+        return 0;
+    }
+    else if (vk == VK_BACK)
+    {
+        if (_pinyin_sequence.size() > 0)
+        {
+            _pinyin_sequence = _pinyin_sequence.substr(0, _pinyin_sequence.size() - 1);
+        }
+        if (_pinyin_sequence.size() == _help_mode_raw_pos)
+        {
+            _is_help_mode = false;
+            _help_mode_raw_pos = 0;
+        }
+    }
+
+    //
+    // We do not handle other keys currently
+    //
+
+    /* Generate candidate list */
+    // Real help mode triggered by Tab(comple help mode)
+    if (_is_help_mode && _pinyin_sequence.size() > _help_mode_raw_pos)
+    {
+        // Shuangpin part must be complete
+        if (PinyinUtil::is_all_complete_pinyin(_pure_pinyin_sequence, _pinyin_segmentation))
+        {
+            _pure_pinyin_sequence = _pinyin_sequence.substr(0, _help_mode_raw_pos);
+            _pinyin_segmentation = PinyinUtil::pinyin_segmentation(_pure_pinyin_sequence);
+            _pinyin_helpcodes = _pinyin_sequence.substr(     //
+                _help_mode_raw_pos,                          //
+                _pinyin_sequence.size() - _help_mode_raw_pos //
+            );
+            _cur_candidate_list = generate_with_helpcodes( //
+                _pure_pinyin_sequence,                     //
+                _pinyin_segmentation,                      //
+                _pinyin_sequence,                          //
+                _pinyin_helpcodes                          //
+            );
+        }
+        else
+        {
+            _pinyin_segmentation = PinyinUtil::pinyin_segmentation(_pinyin_sequence);
+            _cur_candidate_list = generate(_pinyin_sequence, _pinyin_segmentation);
+        }
+    }
+    else
+    {
+        // Not in complete help mode:
+        //   1. odd length pinyin sequence, and shuangpin part is complete, need to trigger help mode
+        //   2. even length pinyin sequence, no need to trigger help mode
+        if (_pinyin_sequence.size() % 2 == 1 && _pinyin_sequence.size() > 1)
+        {
+            _pure_pinyin_sequence = _pinyin_sequence.substr(0, _pinyin_sequence.size() - 1);
+            _pinyin_segmentation = PinyinUtil::pinyin_segmentation(_pure_pinyin_sequence);
+            if (PinyinUtil::is_all_complete_pinyin(_pure_pinyin_sequence, _pinyin_segmentation))
+            {
+                // Odd length pinyin sequence, and shuangpin part is complete, need to trigger help mode
+                _pure_pinyin_sequence = _pinyin_sequence.substr(0, _pinyin_sequence.size() - 1);
+                _pinyin_segmentation = PinyinUtil::pinyin_segmentation(_pure_pinyin_sequence);
+                _pinyin_helpcodes = _pinyin_sequence.substr(_pinyin_sequence.size() - 1, 1);
+                _cur_candidate_list = generate_with_helpcodes( //
+                    _pure_pinyin_sequence,                     //
+                    _pinyin_segmentation,                      //
+                    _pinyin_sequence,                          //
+                    _pinyin_helpcodes                          //
+                );
+
+                // Attach original pinyin's candidate list to the end of help mode candidate list
+                _pinyin_segmentation = PinyinUtil::pinyin_segmentation(_pinyin_sequence);
+                auto original_candidate_list = generate(_pinyin_sequence, _pinyin_segmentation);
+                _cur_candidate_list.insert(          //
+                    _cur_candidate_list.end(),       //
+                    original_candidate_list.begin(), //
+                    original_candidate_list.end()    //
+                );
+            }
+            else
+            {
+                // Still use pure pinyin without triggerring help mode
+                _pinyin_segmentation = PinyinUtil::pinyin_segmentation(_pinyin_sequence);
+                _cur_candidate_list = generate(_pinyin_sequence, _pinyin_segmentation);
+            }
+        }
+        else
+        {
+            // Even length pinyin sequence, no need to trigger help mode
+            _pinyin_segmentation = PinyinUtil::pinyin_segmentation(_pinyin_sequence);
+            _cur_candidate_list = generate(_pinyin_sequence, _pinyin_segmentation);
+        }
+    }
+
+    _pinyin_segmentation = PinyinUtil::pinyin_segmentation(_pinyin_sequence);
+
+    return 0;
+}
+
+void DictionaryUlPb::filter_key_value_list(                       //
+    vector<DictionaryUlPb::WordItem> &candidate_list,             //
+    const vector<string> &pinyin_list,                            //
+    const vector<DictionaryUlPb::WordItem> &key_value_weight_list //
+)
 {
     string regex_str("");
     for (const auto &each_pinyin : pinyin_list)
@@ -168,7 +500,7 @@ int DictionaryUlPb::create_word(string pinyin, string word)
     for (size_t i = 0; i < pinyin.size(); i += 2)
         jp += pinyin[i];
     if (!do_validate(pinyin, jp, word))
-        return ERROR;
+        return ERROR_CODE;
     if (check_data(build_sql_for_checking_word(pinyin, jp, word)))
     {
         return OK;
@@ -461,4 +793,16 @@ string DictionaryUlPb::search_sentence_from_ime_engine(const string &user_pinyin
         msg = from_utf16(buf, len);
     }
     return msg;
+}
+
+void DictionaryUlPb::reset_state()
+{
+    _is_help_mode = false;
+    _help_mode_raw_pos = 0;
+    _kb_input_sequence.clear();
+    _pinyin_sequence = "";
+    _pure_pinyin_sequence = "";
+    _help_codes_sequence.fill(0);
+    _cur_candidate_list.clear();
+    _cur_page_candidate_list.clear();
 }

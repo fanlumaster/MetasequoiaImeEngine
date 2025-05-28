@@ -6,6 +6,7 @@ CompileFlags:
       "-std=c++17",
       "-IC:/Users/SonnyCalcr/EDisk/CppCodes/IMECodes/ImeEngine/ime_engine",
       "-IC:/Users/SonnyCalcr/EDisk/CppCodes/IMECodes/ImeEngine/ime_engine/tests/build/vcpkg_installed/x64-windows/include",
+      "-IC:/Users/SonnyCalcr/EDisk/CppCodes/IMECodes/ImeEngine/ime_engine/utfcpp/source",
       -Wno-microsoft-goto,
       -Wno-nonportable-include-path,
       -Wno-microsoft-extra-qualification,

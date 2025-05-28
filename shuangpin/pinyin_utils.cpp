@@ -1,7 +1,8 @@
 #include "pinyin_utils.h"
+#include <utf8.h>
 #include <vector>
 #include <boost/algorithm/string.hpp>
-#include "boost/algorithm/string/case_conv.hpp"
+#include <boost/algorithm/string/case_conv.hpp>
 
 using namespace std;
 
@@ -283,6 +284,26 @@ string PinyinUtil::pinyin_segmentation(string sp_str)
 }
 
 /**
+ * @brief Get the first han char
+ *
+ * @param words
+ * @return std::string
+ */
+std::string PinyinUtil::get_first_han_char(const std::string &words)
+{
+    auto it = words.begin();
+    auto end = words.end();
+
+    if (it == end)
+        return "";
+
+    auto next = it;
+    utf8::next(next, end);
+
+    return std::string(it, next);
+}
+
+/**
  * @brief Get first UTF-8 char size
  *
  * @param words UTF-8 string
@@ -301,6 +322,27 @@ string::size_type PinyinUtil::get_first_char_size(string words)
     if (cplen > words.length())
         cplen = 1;
     return cplen;
+}
+
+/**
+ * @brief Get the last han char
+ *
+ * @param words
+ * @return std::string
+ */
+std::string PinyinUtil::get_last_han_char(const std::string &words)
+{
+    auto it = words.begin();
+    auto end = words.end();
+
+    if (it == end)
+        return "";
+
+    auto rit = words.end();
+    auto prev = rit;
+    utf8::prior(prev, it);
+
+    return std::string(prev, rit);
 }
 
 /**
@@ -338,6 +380,17 @@ string::size_type PinyinUtil::cnt_han_chars(string words)
         cnt += 1;
     }
     return cnt;
+}
+
+/**
+ * @brief Count UTF-8 chars
+ *
+ * @param str
+ * @return string::size_type
+ */
+string::size_type PinyinUtil::count_utf8_chars(const string &str)
+{
+    return utf8::distance(str.begin(), str.end());
 }
 
 /**

@@ -3,14 +3,14 @@ project(WinCppTemplate VERSION 1.0 LANGUAGES CXX)
 
 # Specify the C++ standard
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED True)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 # Boost
 set(Boost_ROOT "C:/Users/SonnyCalcr/scoop/apps/boost/1.87.0")
 set (Boost_USE_STATIC_LIBS ON)
-find_package(Boost REQUIRED COMPONENTS locale json)
+find_package(Boost REQUIRED COMPONENTS locale)
 include_directories(${Boost_INCLUDE_DIRS})
 
 # fmt, spdlog and sqlite3
@@ -25,6 +25,7 @@ add_definitions(
 
 include_directories("./includes/")
 include_directories("../")
+include_directories("../utfcpp/source/")
 
 set(MY_EXECUTABLE_NAME "imetest")
 set(
