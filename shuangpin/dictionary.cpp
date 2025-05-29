@@ -1,6 +1,6 @@
 #include "dictionary.h"
-#include "fmt/core.h"
-#include "fmt/format.h"
+#include <fmt/core.h>
+#include <fmt/format.h>
 #include "pinyin_utils.h"
 #include <mutex>
 #include <shared_mutex>

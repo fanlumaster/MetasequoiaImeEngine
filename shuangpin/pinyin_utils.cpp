@@ -1,8 +1,9 @@
-#include "pinyin_utils.h"
 #include <utf8.h>
+#include <spdlog/spdlog.h>
 #include <vector>
 #include <boost/algorithm/string.hpp>
 #include <boost/algorithm/string/case_conv.hpp>
+#include "pinyin_utils.h"
 
 using namespace std;
 
@@ -150,6 +151,10 @@ unordered_set<string> &initialize_quanpin_set()
                          + path_seperator                     //
                          + pinyin_file_name                   //
     );
+    if (!pinyin_path.is_open())
+    {
+        spdlog::error("Failed to open pinyin.txt file. Please make sure file exists.");
+    }
     string line;
     while (getline(pinyin_path, line))
     {
@@ -170,6 +175,10 @@ unordered_map<string, string> &initialize_helpcode_keymap()
                            + path_seperator                     //
                            + helpcode_file_name                 //
     );
+    if (!helpcode_path.is_open())
+    {
+        spdlog::error("Failed to open pinyin.txt file. Please make sure file exists.");
+    }
     string line;
     while (getline(helpcode_path, line))
     {
