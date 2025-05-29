@@ -11,9 +11,11 @@ using namespace std;
 void testGenerate()
 {
     DictionaryUlPb dict;
+    dict.generate("yi", "yi");
     vector<UINT> sequence{'N', 'I', 'R'};
     sequence = {'Y', 'I', 'R', 'F', 'I'};
     sequence = {'Y', 'I', 'G', 'E'};
+    sequence = {'Y', 'I'};
 
     for (const auto &c : sequence)
     {
@@ -27,7 +29,7 @@ void testGenerate()
 
     for (const auto &[pinyin, word, weight] : result)
     {
-        fmt::println("Word: {}", word);
+        // fmt::println("Word: {}", word);
     }
 }
 
