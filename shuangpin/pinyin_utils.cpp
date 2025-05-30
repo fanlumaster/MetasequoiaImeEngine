@@ -7,8 +7,8 @@
 
 using namespace std;
 
+const string PinyinUtil::app_name = "FanImeTsf";
 static string path_seperator = "\\";
-static string app_name = "DeerWritingBrush";
 static string pinyin_file_name = "pinyin.txt";
 static string helpcode_file_name = "helpcode.txt";
 
@@ -147,7 +147,7 @@ unordered_set<string> &initialize_quanpin_set()
     static unordered_set<string> tmp_set;
     ifstream pinyin_path(PinyinUtil::get_local_appdata_path() //
                          + path_seperator                     //
-                         + app_name                           //
+                         + PinyinUtil::app_name               //
                          + path_seperator                     //
                          + pinyin_file_name                   //
     );
@@ -171,7 +171,7 @@ unordered_map<string, string> &initialize_helpcode_keymap()
     static unordered_map<string, string> tmp_map;
     ifstream helpcode_path(PinyinUtil::get_local_appdata_path() //
                            + path_seperator                     //
-                           + app_name                           //
+                           + PinyinUtil::app_name               //
                            + path_seperator                     //
                            + helpcode_file_name                 //
     );

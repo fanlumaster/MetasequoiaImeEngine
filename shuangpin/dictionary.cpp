@@ -55,16 +55,20 @@ vector<string> DictionaryUlPb::single_han_list{
 DictionaryUlPb::DictionaryUlPb() : _kb_input_sequence(100), _cached_buffer(25)
 {
     ime_pinyin::im_set_max_lens(64, 32);
-    bool _res = ime_pinyin::im_open_decoder(                                                    //
-        (PinyinUtil::get_local_appdata_path() + "\\DeerWritingBrush\\dict_pinyin.dat").c_str(), //
-        (PinyinUtil::get_local_appdata_path() + "\\DeerWritingBrush\\user_dict.dat").c_str()    //
+    bool _res = ime_pinyin::im_open_decoder(                                                                          //
+        (fmt::format("{}\\{}\\dict_pinyin.dat", PinyinUtil::get_local_appdata_path(), PinyinUtil::app_name)).c_str(), //
+        (fmt::format("{}\\{}\\user_dict.dat", PinyinUtil::get_local_appdata_path(), PinyinUtil::app_name)).c_str()    //
     );
     if (!_res)
     {
         spdlog::error("Failed to open googleime dictionary.");
     }
 
-    db_path = PinyinUtil::get_local_appdata_path() + "\\DeerWritingBrush\\cutted_flyciku_with_jp.db";
+    db_path = fmt::format(                    //
+        "{}\\{}\\cutted_flyciku_with_jp.db",  //
+        PinyinUtil::get_local_appdata_path(), //
+        PinyinUtil::app_name                  //
+    );
     int exit = sqlite3_open(db_path.c_str(), &db);
     if (exit != SQLITE_OK)
     {

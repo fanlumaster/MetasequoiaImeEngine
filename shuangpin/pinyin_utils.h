@@ -13,6 +13,7 @@ class PinyinUtil
   public:
     static std::string get_local_appdata_path();
     static std::string local_appdata_path;
+    static const std::string app_name;
 
     static std::unordered_map<std::string, std::string> sm_keymaps;
     static std::unordered_map<std::string, std::string> sm_keymaps_reversed;
