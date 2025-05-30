@@ -7,6 +7,14 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
+add_definitions(
+    /D_UNICODE=1
+    /DUNICODE=1
+)
+
+# For utf8cpp, make it use C++11 and later
+add_compile_options(/Zc:__cplusplus)
+
 # Boost
 set(Boost_ROOT "C:/Users/19833/scoop/apps/boost/1.88.0")
 set (Boost_USE_STATIC_LIBS ON)
@@ -17,11 +25,6 @@ include_directories(${Boost_INCLUDE_DIRS})
 find_package(fmt CONFIG REQUIRED)
 find_package(spdlog CONFIG REQUIRED)
 find_package(unofficial-sqlite3 CONFIG REQUIRED)
-
-add_definitions(
-    /D_UNICODE=1
-    /DUNICODE=1
-)
 
 include_directories("./includes/")
 include_directories("../")
