@@ -20,7 +20,7 @@ vcpkg_include = normpath(
     )
 )
 utfcpp_path = normpath(os.path.join(FanImeEngine_root, "utfcpp", "source"))
-boost_path = normpath(os.path.join(user_home, "scoop", "apps", "boost", "1.88.0"))
+boost_path = normpath(os.path.join(user_home, "scoop", "apps", "boost", "current"))
 
 # project_root/.clangd
 dot_clangd_new_lines = [

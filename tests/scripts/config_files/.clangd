@@ -7,7 +7,7 @@ CompileFlags:
       "-IC:/Users/19833/EDisk/CppCodes/ImeCodes/FanImeEngine",
       "-IC:/Users/19833/EDisk/CppCodes/ImeCodes/FanImeEngine/tests/build/vcpkg_installed/x64-windows/include",
       "-IC:/Users/19833/EDisk/CppCodes/ImeCodes/FanImeEngine/utfcpp/source",
-      "-IC:/Users/19833/scoop/apps/boost/1.88.0",
+      "-IC:/Users/19833/scoop/apps/boost/current",
       -Wno-microsoft-goto,
       -Wno-nonportable-include-path,
       -Wno-microsoft-extra-qualification,
