@@ -16,6 +16,7 @@ void testGenerate()
     sequence = {'Y', 'I', 'R', 'F', 'I'};
     sequence = {'Y', 'I', 'G', 'E'};
     sequence = {'Y', 'I'};
+    sequence = {'N', 'I', 'H'};
 
     for (const auto &c : sequence)
     {
@@ -29,7 +30,7 @@ void testGenerate()
 
     for (const auto &[pinyin, word, weight] : result)
     {
-        // fmt::println("Word: {}", word);
+        fmt::println("Word: {}", word);
     }
 }
 
