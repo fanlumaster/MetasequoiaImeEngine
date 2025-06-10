@@ -1,6 +1,6 @@
-# FanIme Engine
+# MetasequoiaIme Engine
 
-General IME engine for [FanImeTsf](https://github.com/fanlumaster/FanImeTsf).
+General IME engine for [MetasequoiaImeTsf](https://github.com/fanlumaster/MetasequoiaImeTsf).
 
 ## How to build
 
@@ -15,8 +15,8 @@ Prerequisites:
 Build steps:
 
 ```powershell
-git clone --recursive git@github.com:fanlumaster/FanImeEngine.git
-cd .\FanImeEngine\
+git clone --recursive git@github.com:fanlumaster/MetasequoiaImeEngine.git
+cd .\MetasequoiaImeEngine\
 python .\tests\scripts\prepare_env.py
 cd .\tests\
 .\scripts\llaunch.ps1

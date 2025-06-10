@@ -13,26 +13,26 @@ project_root_path = os.path.dirname(os.path.dirname(cur_file_path))
 
 user_home = os.path.expanduser("~")
 
-FanImeEngine_root = normpath(project_root_path)
+MetasequoiaImeEngine_root = normpath(project_root_path)
 vcpkg_include = normpath(
     os.path.join(
-        FanImeEngine_root, "tests", "build", "vcpkg_installed", "x64-windows", "include"
+        MetasequoiaImeEngine_root, "tests", "build", "vcpkg_installed", "x64-windows", "include"
     )
 )
-utfcpp_path = normpath(os.path.join(FanImeEngine_root, "utfcpp", "source"))
+utfcpp_path = normpath(os.path.join(MetasequoiaImeEngine_root, "utfcpp", "source"))
 boost_path = normpath(os.path.join(user_home, "scoop", "apps", "boost", "current"))
 
 # project_root/.clangd
 dot_clangd_new_lines = [
-    f'      "-I{FanImeEngine_root}",\n',
+    f'      "-I{MetasequoiaImeEngine_root}",\n',
     f'      "-I{vcpkg_include}",\n',
     f'      "-I{utfcpp_path}",\n',
     f'      "-I{boost_path}",\n',
 ]
 dot_clangd_file = os.path.join(
-    FanImeEngine_root, "tests", "scripts", "config_files", ".clangd"
+    MetasequoiaImeEngine_root, "tests", "scripts", "config_files", ".clangd"
 )
-dot_clangd_output_file = os.path.join(FanImeEngine_root, ".clangd")
+dot_clangd_output_file = os.path.join(MetasequoiaImeEngine_root, ".clangd")
 with open(dot_clangd_file, "r", encoding="utf-8") as f:
     lines = f.readlines()
 lines[6:10] = dot_clangd_new_lines
@@ -44,9 +44,9 @@ CMakeLists_new_line = (
     f'set(Boost_ROOT "{normpath(user_home)}/scoop/apps/boost/current")\n'
 )
 CMakeLists_file = os.path.join(
-    FanImeEngine_root, "tests", "scripts", "config_files", "CMakeLists.txt"
+    MetasequoiaImeEngine_root, "tests", "scripts", "config_files", "CMakeLists.txt"
 )
-CMakeLists_output_file = os.path.join(FanImeEngine_root, "tests", "CMakeLists.txt")
+CMakeLists_output_file = os.path.join(MetasequoiaImeEngine_root, "tests", "CMakeLists.txt")
 with open(CMakeLists_file, "r", encoding="utf-8") as f:
     lines = f.readlines()
 lines[18] = CMakeLists_new_line
@@ -59,10 +59,10 @@ CMakePresets_new_line_8 = (
 )
 CMakePresets_new_line_11 = f'        "CMAKE_TOOLCHAIN_FILE": "{normpath(user_home)}/scoop/apps/vcpkg/current/scripts/buildsystems/vcpkg.cmake",\n'
 CMakePresets_file = os.path.join(
-    FanImeEngine_root, "tests", "scripts", "config_files", "CMakePresets.json"
+    MetasequoiaImeEngine_root, "tests", "scripts", "config_files", "CMakePresets.json"
 )
 CMakePresets_file_output_file = os.path.join(
-    FanImeEngine_root, "tests", "CMakePresets.json"
+    MetasequoiaImeEngine_root, "tests", "CMakePresets.json"
 )
 with open(CMakePresets_file, "r", encoding="utf-8") as f:
     lines = f.readlines()

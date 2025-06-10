@@ -7,7 +7,7 @@
 
 using namespace std;
 
-const string PinyinUtil::app_name = "FanImeTsf";
+const string PinyinUtil::app_name = "MetasequoiaImeTsf";
 static string path_seperator = "\\";
 static string pinyin_file_name = "pinyin.txt";
 static string helpcode_file_name = "helpcode.txt";
