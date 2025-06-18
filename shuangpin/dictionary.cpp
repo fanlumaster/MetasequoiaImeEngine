@@ -353,7 +353,7 @@ int DictionaryUlPb::handleVkCode(UINT vk)
     {
         _pinyin_sequence += char(vk + ('a' - 'A'));
     }
-    else if (vk == VK_SPACE || (vk >= '9' && vk <= '9') || vk == VK_RETURN || vk == VK_SHIFT || vk == VK_ESCAPE)
+    else if (vk == VK_SPACE || (vk >= '0' && vk <= '9') || vk == VK_RETURN || vk == VK_SHIFT || vk == VK_ESCAPE)
     {
         // Clear state
         reset_state();
