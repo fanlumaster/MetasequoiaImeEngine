@@ -34,6 +34,7 @@ set(MY_EXECUTABLE_NAME "imetest")
 set(
     SOURCE_FILES
     "./src/test_shuangpin.cpp"
+    "../shuangpin/common_utils.cpp"
     "../shuangpin/dictionary.cpp"
     "../shuangpin/pinyin_utils.cpp"
     # Google IME

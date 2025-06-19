@@ -1,5 +1,6 @@
 #pragma once
 
+#include "common_utils.h"
 #include <windows.h>
 #include <shared_mutex>
 #include <array>
@@ -11,7 +12,6 @@
 #include <sqlite3.h>
 #include <memory>
 #include <boost/algorithm/string.hpp>
-#include <boost/circular_buffer.hpp>
 
 class DictionaryUlPb
 {
@@ -112,7 +112,10 @@ class DictionaryUlPb
     /* Current candidate list, computed by current kb_input_sequence */
     std::vector<WordItem> _cur_candidate_list;
     std::vector<WordItem> _cur_page_candidate_list; // Current candidate list
-    boost::circular_buffer<std::pair<std::string, std::vector<WordItem>>> _cached_buffer;
+    // boost::circular_buffer<std::pair<std::string, std::vector<WordItem>>> _cached_buffer;
+    CircularBuffer<std::string, std::vector<WordItem>> _cached_buffer;
+    CircularBuffer<std::string, std::vector<WordItem>> _cached_buffer_sgl; // Single helpcode
+    CircularBuffer<std::string, std::vector<WordItem>> _cached_buffer_dbl; // Double helpcodes
 
   public:
     // Getters and setters

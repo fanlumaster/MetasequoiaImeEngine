@@ -52,7 +52,8 @@ vector<string> DictionaryUlPb::single_han_list{
     "在子自做走再最怎作总"  //
 };
 
-DictionaryUlPb::DictionaryUlPb() : _kb_input_sequence(100), _cached_buffer(25)
+DictionaryUlPb::DictionaryUlPb()
+    : _kb_input_sequence(100), _cached_buffer(128), _cached_buffer_sgl(128), _cached_buffer_dbl(128)
 {
     ime_pinyin::im_set_max_lens(64, 32);
     bool _res = ime_pinyin::im_open_decoder(                                                                          //
@@ -101,6 +102,13 @@ vector<DictionaryUlPb::WordItem> DictionaryUlPb::generate( //
     }
     else
     {
+        // Check cache first
+        if (_cached_buffer.get(pinyin_sequence))
+        {
+            candidate_list = _cached_buffer.get(pinyin_sequence).value();
+            return candidate_list;
+        }
+
         vector<string> pinyin_list;
         boost::split(pinyin_list, pinyin_segmentation, boost::is_any_of("'"));
         // Build sql for query
@@ -115,6 +123,7 @@ vector<DictionaryUlPb::WordItem> DictionaryUlPb::generate( //
         {
             candidate_list = select_complete_data(sql_str);
         }
+        _cached_buffer.insert(pinyin_sequence, candidate_list);
     }
     return candidate_list;
 }
@@ -282,21 +291,46 @@ vector<DictionaryUlPb::WordItem> DictionaryUlPb::generate_with_helpcodes( //
     const string &help_codes                                              //
 )
 {
-    vector<WordItem> candidate_list = generate(pure_pinyin, pure_pinyin_segmentation);
+    vector<WordItem> candidate_list;
+    // Check cache first
+    if (help_codes.size() == 1)
+    {
+        if (_cached_buffer_sgl.get(pinyin_sequence))
+        {
+            candidate_list = _cached_buffer_sgl.get(pinyin_sequence).value();
+            return candidate_list;
+        }
+    }
+    else if (help_codes.size() == 2)
+    {
+        if (_cached_buffer_dbl.get(pinyin_sequence))
+        {
+            candidate_list = _cached_buffer_dbl.get(pinyin_sequence).value();
+            return candidate_list;
+        }
+    }
+
+    candidate_list = generate(pure_pinyin, pure_pinyin_segmentation);
     vector<WordItem> filtered_list;
     // Filter with help codes
     if (help_codes.size() == 1)
+    {
         filter_with_single_helpcode( //
             candidate_list,          //
             filtered_list,           //
             help_codes               //
         );
+        _cached_buffer_sgl.insert(pinyin_sequence, filtered_list);
+    }
     else if (help_codes.size() == 2)
+    {
         filter_with_double_helpcodes( //
             candidate_list,           //
             filtered_list,            //
             help_codes                //
         );
+        _cached_buffer_dbl.insert(pinyin_sequence, filtered_list);
+    }
     return filtered_list;
 }
 
