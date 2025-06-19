@@ -139,6 +139,8 @@ void DictionaryUlPb::filter_with_single_helpcode(                //
     const std::string &help_code                                 //
 )
 {
+    if (candidate_list.empty())
+        return;
     unordered_set<string> wordSet;
     if (PinyinUtil::count_utf8_chars(std::get<1>(candidate_list[0])) == 1)
     {
@@ -223,6 +225,8 @@ void DictionaryUlPb::filter_with_double_helpcodes(               //
     const std::string &help_codes                                //
 )
 {
+    if (candidate_list.empty())
+        return;
     if (PinyinUtil::count_utf8_chars(std::get<1>(candidate_list[0])) == 1)
     {
         /* Single Hanzi */
