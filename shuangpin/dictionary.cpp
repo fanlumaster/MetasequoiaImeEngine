@@ -153,7 +153,10 @@ void DictionaryUlPb::filter_with_single_helpcode(                //
     unordered_set<string> wordSet;
     if (PinyinUtil::count_utf8_chars(std::get<1>(candidate_list[0])) == 1)
     {
-        /* Single Hanzi */
+        //
+        // Single Hanzi
+        //
+        /*  First helpcode matches */
         for (const auto &cand : candidate_list)
         {
             string word = std::get<1>(cand);
@@ -169,6 +172,15 @@ void DictionaryUlPb::filter_with_single_helpcode(                //
                     filtered_list.push_back(cand);
                     wordSet.insert(word);
                 }
+            }
+        }
+        /* Second helpcode matches */
+        for (const auto &cand : candidate_list)
+        {
+            string word = std::get<1>(cand);
+            string firstHanChar = PinyinUtil::get_first_han_char(word);
+            if (PinyinUtil::helpcode_keymap.count(firstHanChar))
+            {
                 if (PinyinUtil::helpcode_keymap[firstHanChar][1] == help_code[0])
                 {
                     if (wordSet.count(word))
@@ -183,7 +195,10 @@ void DictionaryUlPb::filter_with_single_helpcode(                //
     }
     else
     {
-        /* Multi Hanzi */
+        //
+        // Multi Hanzi
+        //
+        /* First Hanzi's first helpcode matches */
         for (const auto &cand : candidate_list)
         {
             string word = std::get<1>(cand);
@@ -200,6 +215,16 @@ void DictionaryUlPb::filter_with_single_helpcode(                //
                     filtered_list.push_back(cand);
                     wordSet.insert(word);
                 }
+            }
+        }
+        /* Last hanzi's first helpcode matches */
+        for (const auto &cand : candidate_list)
+        {
+            string word = std::get<1>(cand);
+            string firstHanChar = PinyinUtil::get_first_han_char(word);
+            string lastHanChar = PinyinUtil::get_last_han_char(word);
+            if (PinyinUtil::helpcode_keymap.count(firstHanChar))
+            {
                 if (PinyinUtil::helpcode_keymap[lastHanChar][0] == help_code[0])
                 {
                     if (wordSet.count(word))
