@@ -871,3 +871,10 @@ void DictionaryUlPb::reset_state()
     _cur_candidate_list.clear();
     _cur_page_candidate_list.clear();
 }
+
+void DictionaryUlPb::reset_cache()
+{
+    _cached_buffer.clear();
+    _cached_buffer_sgl.clear();
+    _cached_buffer_dbl.clear();
+}

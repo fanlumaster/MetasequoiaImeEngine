@@ -148,4 +148,5 @@ class DictionaryUlPb
     }
 
     void reset_state();
+    void reset_cache();
 };
