@@ -21,7 +21,7 @@ void testGenerate()
     for (const auto &c : sequence)
     {
         std::chrono::high_resolution_clock::time_point start = std::chrono::high_resolution_clock::now();
-        dict.handleVkCode(c);
+        dict.handleVkCode(c, 0);
         std::chrono::high_resolution_clock::time_point end = std::chrono::high_resolution_clock::now();
         auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
         fmt::println("Time: {} us", duration.count());
