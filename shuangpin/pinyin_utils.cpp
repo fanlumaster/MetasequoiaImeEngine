@@ -513,3 +513,28 @@ string PinyinUtil::convert_seg_shuangpin_to_seg_complete_pinyin(string seg_shang
     }
     return res.substr(0, res.size() - 1);
 }
+
+/**
+ * @brief
+ *
+ * @param pinyin
+ * @return true
+ * @return false
+ */
+bool PinyinUtil::IsFullHelpMode(std::string pinyin)
+{
+    auto len = pinyin.size();
+    if (len == 0 || len == 2)
+        return false;
+    if (len % 2 != 0)
+        return false;
+    auto pure_pinyin = pinyin.substr(0, len - 2);
+    if (is_all_complete_pinyin(pure_pinyin, pinyin_segmentation(pure_pinyin)))
+    {
+        if (pinyin[len - 1] >= 'A' && pinyin[len - 1] <= 'Z')
+        {
+            return true;
+        }
+    }
+    return false;
+}

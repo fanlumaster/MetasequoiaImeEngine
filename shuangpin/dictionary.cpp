@@ -409,12 +409,16 @@ void DictionaryUlPb::generate_for_single_char(vector<DictionaryUlPb::WordItem> &
  * @param vk
  * @return int
  */
-int DictionaryUlPb::handleVkCode(UINT vk)
+int DictionaryUlPb::handleVkCode(UINT vk, UINT modifiers_down)
 {
     _kb_input_sequence.push_back(vk);
     if (vk >= 'A' && vk <= 'Z')
     {
         _pinyin_sequence += char(vk + ('a' - 'A'));
+        if (modifiers_down >> 0 & 1u)
+            _pinyin_sequence_with_cases += char(vk);
+        else
+            _pinyin_sequence_with_cases += char(vk + ('a' - 'A'));
     }
     else if (vk == VK_SPACE || (vk >= '0' && vk <= '9') || vk == VK_RETURN || vk == VK_SHIFT || vk == VK_ESCAPE)
     {
@@ -424,12 +428,6 @@ int DictionaryUlPb::handleVkCode(UINT vk)
     }
     else if (vk == VK_TAB)
     {
-        // Toggle help mode
-        if (!_is_help_mode)
-        {
-            _is_help_mode = true;
-            _help_mode_raw_pos = _pinyin_sequence.size();
-        }
         return 0;
     }
     else if (vk == VK_BACK)
@@ -437,17 +435,24 @@ int DictionaryUlPb::handleVkCode(UINT vk)
         if (_pinyin_sequence.size() > 0)
         {
             _pinyin_sequence = _pinyin_sequence.substr(0, _pinyin_sequence.size() - 1);
-        }
-        if (_pinyin_sequence.size() == _help_mode_raw_pos)
-        {
-            _is_help_mode = false;
-            _help_mode_raw_pos = 0;
+            _pinyin_sequence_with_cases = _pinyin_sequence_with_cases.substr(0, _pinyin_sequence_with_cases.size() - 1);
         }
     }
 
     //
     // We do not handle other keys currently
     //
+
+    /* Whether in full help mode */
+    _is_help_mode = PinyinUtil::IsFullHelpMode(_pinyin_sequence_with_cases);
+    if (_is_help_mode)
+    {
+        _help_mode_raw_pos = _pinyin_sequence.size() - 2;
+    }
+    else
+    {
+        _help_mode_raw_pos = 0;
+    }
 
     /* Generate candidate list */
     // Real help mode triggered by Tab(comple help mode)
@@ -866,6 +871,7 @@ void DictionaryUlPb::reset_state()
     _help_mode_raw_pos = 0;
     _kb_input_sequence.clear();
     _pinyin_sequence = "";
+    _pinyin_sequence_with_cases = "";
     _pure_pinyin_sequence = "";
     _help_codes_sequence.fill(0);
     _cur_candidate_list.clear();

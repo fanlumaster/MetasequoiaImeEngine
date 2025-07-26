@@ -38,7 +38,7 @@ class DictionaryUlPb
         const std::string &pinyin_sequence,          //
         const std::string &help_codes                //
     );
-    int handleVkCode(UINT vk);
+    int handleVkCode(UINT vk, UINT modifiers_down);
     std::vector<WordItem> generate_for_creating_word(const std::string code);
     int create_word(std::string pinyin, std::string word);
     // 一次到顶
@@ -98,13 +98,15 @@ class DictionaryUlPb
     // Lock
     std::shared_mutex mutex_; // Read-write separation lock
 
-    // Whether in help mode
+    // Whether in full help mode
     bool _is_help_mode = false;
     // Localtion of starting position
-    int _help_mode_raw_pos = 0;                    // Start from pos, e.g. 妮: ninv: 2
-    std::string _pinyin_helpcodes = "";            // Help codes
-    std::vector<UINT> _kb_input_sequence;          // Keyboard input sequence
-    std::string _pinyin_sequence = "";             // Pinyin extracted from from keyboard sequence
+    int _help_mode_raw_pos = 0;           // Start from pos, e.g. 妮: ninv: 2
+    std::string _pinyin_helpcodes = "";   // Help codes
+    std::vector<UINT> _kb_input_sequence; // Keyboard input sequence
+    std::string _pinyin_sequence = "";    // Pinyin extracted from from keyboard sequence
+    std::string _pinyin_sequence_with_cases =
+        ""; // Pinyin extracted from from keyboard sequence, but with letters' original cases
     std::string _pure_pinyin_sequence = "";        // Pinyin without help code
     std::array<char, 2> _help_codes_sequence = {}; // Help code extracted from from keyboard sequence
     std::string _pinyin_segmentation = "";         // Segmentation pinyin

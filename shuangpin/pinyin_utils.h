@@ -36,4 +36,6 @@ class PinyinUtil
     static std::string extract_preview(std::string candidate);
     static bool is_all_complete_pinyin(std::string pure_pinyin, std::string seg_pinyin);
     static std::string convert_seg_shuangpin_to_seg_complete_pinyin(std::string seg_shangpin);
+
+    static bool IsFullHelpMode(std::string pinyin);
 };
