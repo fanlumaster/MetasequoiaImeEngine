@@ -405,6 +405,9 @@ string::size_type PinyinUtil::count_utf8_chars(const string &str)
 /**
  * @brief Compute helpcodes
  *
+ * - Single Hanzi: (helpcode)
+ * - Multi Hanzi: (first hanzi's first helpcode + last hanzi's first helpcode)
+ *
  * @param words UTF-8 string
  * @return string Helpcodes surrounded by ()
  */
@@ -420,20 +423,23 @@ string PinyinUtil::compute_helpcodes(string words)
     }
     else
     {
-        size_t index = 0;
-        while (index < words.size())
+        string firstHan = get_first_han_char(words);
+        if (helpcode_keymap.count(firstHan))
         {
-            size_t cplen = get_first_char_size(words.substr(index, words.size() - index));
-            string cur_han(words.substr(index, cplen));
-            if (helpcode_keymap.count(cur_han))
-            {
-                helpcodes += helpcode_keymap[cur_han].substr(0, 1);
-            }
-            else
-            {
-                return "";
-            }
-            index += cplen;
+            helpcodes += helpcode_keymap[firstHan].substr(0, 1);
+        }
+        else
+        {
+            return "";
+        }
+        string lastHan = get_last_han_char(words);
+        if (helpcode_keymap.count(lastHan))
+        {
+            helpcodes += helpcode_keymap[lastHan].substr(0, 1);
+        }
+        else
+        {
+            return "";
         }
     }
     if (helpcodes.size() > 0)
