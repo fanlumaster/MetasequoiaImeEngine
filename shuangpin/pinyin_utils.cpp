@@ -419,10 +419,12 @@ string PinyinUtil::compute_helpcodes(string words)
         if (helpcode_keymap.count(words))
         {
             helpcodes += helpcode_keymap[words];
+            helpcodes[1] = toupper(helpcodes[1]);
         }
     }
     else
     {
+        // First
         string firstHan = get_first_han_char(words);
         if (helpcode_keymap.count(firstHan))
         {
@@ -432,10 +434,12 @@ string PinyinUtil::compute_helpcodes(string words)
         {
             return "";
         }
+        // Second
         string lastHan = get_last_han_char(words);
         if (helpcode_keymap.count(lastHan))
         {
             helpcodes += helpcode_keymap[lastHan].substr(0, 1);
+            helpcodes[1] = toupper(helpcodes[1]);
         }
         else
         {
