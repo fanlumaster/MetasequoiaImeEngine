@@ -1,6 +1,5 @@
 #include "dictionary.h"
-#include <fmt/core.h>
-#include <fmt/format.h>
+#include "common_utils.h"
 #include "pinyin_utils.h"
 #include <mutex>
 #include <shared_mutex>
@@ -15,6 +14,7 @@
 #include "../googlepinyinime-rev/src/include/pinyinime.h"
 #include "spdlog/spdlog.h"
 #include <boost/locale/encoding_utf.hpp>
+#include <fmt/xchar.h>
 
 using namespace std;
 
@@ -527,6 +527,12 @@ int DictionaryUlPb::handleVkCode(UINT vk, UINT modifiers_down)
     }
 
     _pinyin_segmentation = PinyinUtil::pinyin_segmentation(_pinyin_sequence);
+    if (_cur_candidate_list.size() == 0)
+    {
+        string quanpin_str = PinyinUtil::convert_seg_shuangpin_to_seg_complete_pinyin(_pinyin_segmentation);
+        string res = search_sentence_from_ime_engine(quanpin_str);
+        _cur_candidate_list.push_back(make_tuple(_pinyin_sequence, res, 1));
+    }
 
     return 0;
 }

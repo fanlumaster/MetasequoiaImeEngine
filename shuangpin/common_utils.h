@@ -3,6 +3,7 @@
 #include <unordered_map>
 #include <list>
 #include <optional>
+#include <string>
 
 template <typename Key, typename Value> class CircularBuffer
 {
@@ -74,3 +75,9 @@ template <typename Key, typename Value> class CircularBuffer
     std::list<Key> _list;
     std::unordered_map<Key, std::pair<Value, typename std::list<Key>::iterator>> _map;
 };
+
+namespace CommonUtils
+{
+std::wstring string_to_wstring(const std::string &str);
+std::string wstring_to_string(const std::wstring &wstr);
+} // namespace CommonUtils
