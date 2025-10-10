@@ -32,6 +32,10 @@ class DictionaryUlPb
         const std::string &pinyin_sequence,    //
         const std::string &pinyin_segmentation //
     );
+    std::vector<DictionaryUlPb::WordItem> DictionaryUlPb::generateSeries( //
+        const std::string &pinyin_sequence,                               //
+        const std::string &pinyin_segmentation                            //
+    );
     std::vector<WordItem> generate_with_helpcodes(   //
         const std::string &pure_pinyin,              //
         const std::string &pure_pinyin_segmentation, //
@@ -115,9 +119,10 @@ class DictionaryUlPb
     std::vector<WordItem> _cur_candidate_list;
     std::vector<WordItem> _cur_page_candidate_list; // Current candidate list
     // boost::circular_buffer<std::pair<std::string, std::vector<WordItem>>> _cached_buffer;
-    CircularBuffer<std::string, std::vector<WordItem>> _cached_buffer;
-    CircularBuffer<std::string, std::vector<WordItem>> _cached_buffer_sgl; // Single helpcode
-    CircularBuffer<std::string, std::vector<WordItem>> _cached_buffer_dbl; // Double helpcodes
+    CircularBuffer<std::string, std::vector<WordItem>> _cached_buffer;        // 缓存纯拼音的结果
+    CircularBuffer<std::string, std::vector<WordItem>> _cached_buffer_sgl;    // 缓存单码辅助结果
+    CircularBuffer<std::string, std::vector<WordItem>> _cached_buffer_dbl;    // 缓存双码辅助结果
+    CircularBuffer<std::string, std::vector<WordItem>> _cached_buffer_series; // 缓存拼音序列对应的所有结果
 
   public:
     // Getters and setters
