@@ -162,7 +162,23 @@ vector<DictionaryUlPb::WordItem> DictionaryUlPb::generateSeries( //
 
         // 查询当前的拼音严格对应的数据
         vector<DictionaryUlPb::WordItem> cur_pinyin_cand = generate(pinyin_sequence, pinyin_segmentation);
-        candidate_list.insert(candidate_list.end(), cur_pinyin_cand.begin(), cur_pinyin_cand.end());
+        if (cur_pinyin_cand.size() > 0)
+        {
+            candidate_list.insert(candidate_list.end(), cur_pinyin_cand.begin(), cur_pinyin_cand.end());
+        }
+        else
+        { /* 可能数据库查询的结果是空，这时就需要联想，这个只适合在此处联想 */
+            if (candidate_list.size() == 0)
+            {
+                string quanpin_str = PinyinUtil::convert_seg_shuangpin_to_seg_complete_pinyin(pinyin_segmentation);
+                string res = search_sentence_from_ime_engine(quanpin_str);
+                if (res.size() > 0)
+                {
+                    candidate_list.push_back(make_tuple(_pinyin_sequence, res, 1));
+                }
+            }
+        }
+
         // 查询当前的拼音子串对应的数据
         string pure_pinyin = pinyin_sequence;
         string seg_pinyin = pinyin_segmentation;
@@ -566,12 +582,6 @@ int DictionaryUlPb::handleVkCode(UINT vk, UINT modifiers_down)
     }
 
     _pinyin_segmentation = PinyinUtil::pinyin_segmentation(_pinyin_sequence);
-    if (_cur_candidate_list.size() == 0)
-    {
-        string quanpin_str = PinyinUtil::convert_seg_shuangpin_to_seg_complete_pinyin(_pinyin_segmentation);
-        string res = search_sentence_from_ime_engine(quanpin_str);
-        _cur_candidate_list.push_back(make_tuple(_pinyin_sequence, res, 1));
-    }
 
     return 0;
 }
