@@ -480,31 +480,35 @@ void DictionaryUlPb::generate_for_single_char(vector<DictionaryUlPb::WordItem> &
  */
 int DictionaryUlPb::handleVkCode(UINT vk, UINT modifiers_down)
 {
-    _kb_input_sequence.push_back(vk);
-    if (vk >= 'A' && vk <= 'Z')
-    {
-        _pinyin_sequence += char(vk + ('a' - 'A'));
-        if (modifiers_down >> 0 & 1u)
-            _pinyin_sequence_with_cases += char(vk);
-        else
-            _pinyin_sequence_with_cases += char(vk + ('a' - 'A'));
-    }
-    else if (vk == VK_SPACE || (vk >= '0' && vk <= '9') || vk == VK_RETURN || vk == VK_SHIFT || vk == VK_ESCAPE)
-    {
-        // Clear state
-        reset_state();
-        return 0;
-    }
-    else if (vk == VK_TAB)
-    {
-        return 0;
-    }
-    else if (vk == VK_BACK)
-    {
-        if (_pinyin_sequence.size() > 0)
+    if (vk != 0)
+    { /* 0 是造词过程中的 dummy code */
+        _kb_input_sequence.push_back(vk);
+        if (vk >= 'A' && vk <= 'Z')
         {
-            _pinyin_sequence = _pinyin_sequence.substr(0, _pinyin_sequence.size() - 1);
-            _pinyin_sequence_with_cases = _pinyin_sequence_with_cases.substr(0, _pinyin_sequence_with_cases.size() - 1);
+            _pinyin_sequence += char(vk + ('a' - 'A'));
+            if (modifiers_down >> 0 & 1u)
+                _pinyin_sequence_with_cases += char(vk);
+            else
+                _pinyin_sequence_with_cases += char(vk + ('a' - 'A'));
+        }
+        else if (vk == VK_SPACE || (vk >= '0' && vk <= '9') || vk == VK_RETURN || vk == VK_SHIFT || vk == VK_ESCAPE)
+        {
+            // Clear state
+            reset_state();
+            return 0;
+        }
+        else if (vk == VK_TAB)
+        {
+            return 0;
+        }
+        else if (vk == VK_BACK)
+        {
+            if (_pinyin_sequence.size() > 0)
+            {
+                _pinyin_sequence = _pinyin_sequence.substr(0, _pinyin_sequence.size() - 1);
+                _pinyin_sequence_with_cases =
+                    _pinyin_sequence_with_cases.substr(0, _pinyin_sequence_with_cases.size() - 1);
+            }
         }
     }
 
@@ -938,4 +942,10 @@ void DictionaryUlPb::reset_cache()
     _cached_buffer.clear();
     _cached_buffer_sgl.clear();
     _cached_buffer_dbl.clear();
+}
+
+bool DictionaryUlPb::is_all_complete_pinyin()
+{
+    bool res = PinyinUtil::is_all_complete_pinyin(_pinyin_sequence, _pinyin_segmentation);
+    return res;
 }

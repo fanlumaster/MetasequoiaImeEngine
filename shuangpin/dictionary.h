@@ -144,6 +144,26 @@ class DictionaryUlPb
         this->_help_mode_raw_pos = raw_pos;
     }
 
+    const std::string &get_pinyin_sequence()
+    {
+        return this->_pinyin_sequence;
+    }
+
+    void set_pinyin_sequence(const std::string &pinyin_sequence)
+    {
+        this->_pinyin_sequence = pinyin_sequence;
+    }
+
+    const std::string &get_pinyin_sequence_with_cases()
+    {
+        return this->_pinyin_sequence_with_cases;
+    }
+
+    void set_pinyin_sequence_with_cases(const std::string &pinyin_sequence)
+    {
+        this->_pinyin_sequence_with_cases = pinyin_sequence;
+    }
+
     const std::string &get_segmentation_pinyin()
     {
         return this->_pinyin_segmentation;
@@ -153,6 +173,8 @@ class DictionaryUlPb
     {
         return this->_cur_candidate_list;
     }
+
+    bool is_all_complete_pinyin();
 
     void reset_state();
     void reset_cache();
