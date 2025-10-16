@@ -493,8 +493,11 @@ int DictionaryUlPb::handleVkCode(UINT vk, UINT modifiers_down)
         }
         else if (vk == VK_SPACE || (vk >= '0' && vk <= '9') || vk == VK_RETURN || vk == VK_SHIFT || vk == VK_ESCAPE)
         {
-            // Clear state
-            reset_state();
+            if (vk == VK_RETURN || vk == VK_SHIFT || vk == VK_ESCAPE)
+            { /* 空格键和数字键不要清理状态，因为可能会触发造词 */
+                // Clear state
+                reset_state();
+            }
             return 0;
         }
         else if (vk == VK_TAB)
