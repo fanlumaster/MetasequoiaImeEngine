@@ -525,10 +525,10 @@ string PinyinUtil::convert_seg_shuangpin_to_seg_complete_pinyin(string seg_shang
 }
 
 /**
- * @brief
+ * @brief 判断是否是全码辅助
  *
  * @param pinyin
- * @return true
+ * @return true 是偶数个汉字，且最后一个拼音是大写字母，且前面的拼音都是完整的双拼
  * @return false
  */
 bool PinyinUtil::IsFullHelpMode(std::string pinyin)

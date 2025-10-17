@@ -103,7 +103,7 @@ class DictionaryUlPb
     std::shared_mutex mutex_; // Read-write separation lock
 
     // Whether in full help mode
-    bool _is_help_mode = false;
+    bool _is_full_help_mode = false;
     // Localtion of starting position
     int _help_mode_raw_pos = 0;           // Start from pos, e.g. 妮: ninv: 2
     std::string _pinyin_helpcodes = "";   // Help codes
@@ -126,13 +126,13 @@ class DictionaryUlPb
 
   public:
     // Getters and setters
-    bool get_help_mode()
+    bool get_full_help_mode()
     {
-        return this->_is_help_mode;
+        return this->_is_full_help_mode;
     }
-    void set_help_mode(bool is_help_mode)
+    void set_full_help_mode(bool is_full_help_mode)
     {
-        this->_is_help_mode = is_help_mode;
+        this->_is_full_help_mode = is_full_help_mode;
     }
 
     int get_help_mode_raw_pos()
@@ -144,15 +144,44 @@ class DictionaryUlPb
         this->_help_mode_raw_pos = raw_pos;
     }
 
-    const std::string &get_segmentation_pinyin()
+    const std::string &get_pinyin_sequence()
+    {
+        return this->_pinyin_sequence;
+    }
+
+    void set_pinyin_sequence(const std::string &pinyin_sequence)
+    {
+        this->_pinyin_sequence = pinyin_sequence;
+    }
+
+    const std::string &get_pinyin_sequence_with_cases()
+    {
+        return this->_pinyin_sequence_with_cases;
+    }
+
+    void set_pinyin_sequence_with_cases(const std::string &pinyin_sequence)
+    {
+        this->_pinyin_sequence_with_cases = pinyin_sequence;
+    }
+
+    const std::string &get_pinyin_segmentation()
     {
         return this->_pinyin_segmentation;
+    }
+
+    const std::string &get_pure_pinyin_sequence()
+    {
+        return this->_pure_pinyin_sequence;
     }
 
     const std::vector<DictionaryUlPb::WordItem> &get_cur_candiate_list()
     {
         return this->_cur_candidate_list;
     }
+
+    bool is_all_complete_pinyin();
+    bool is_all_complete_pure_pinyin();
+    std::string get_pinyin_segmentation_with_cases();
 
     void reset_state();
     void reset_cache();
