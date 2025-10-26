@@ -15,6 +15,7 @@
 #include "spdlog/spdlog.h"
 #include <boost/locale/encoding_utf.hpp>
 #include <fmt/xchar.h>
+#include <Windows.h>
 
 using namespace std;
 
@@ -979,6 +980,10 @@ std::string DictionaryUlPb::get_pinyin_segmentation_with_cases()
 {
     string res;
     int index = 0;
+    static int cnt = 0;
+    OutputDebugString(
+        fmt::format(L"_pinyin_segmentation: {} {}\n", CommonUtils::string_to_wstring(_pinyin_segmentation), ++cnt)
+            .c_str());
     for (size_t i = 0; i < _pinyin_segmentation.size(); ++i)
     {
         if (_pinyin_segmentation[i] == '\'')
