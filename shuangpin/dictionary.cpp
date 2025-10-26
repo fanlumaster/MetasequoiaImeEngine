@@ -648,6 +648,22 @@ string DictionaryUlPb::build_sql_for_updating_word(string word)
     return res_sql;
 }
 
+string DictionaryUlPb::build_sql_for_updating_word(string pinyin, string word)
+{
+    int han_cnt = PinyinUtil::cnt_han_chars(word);
+    pinyin = pinyin.substr(0, han_cnt * 2);
+    string jp;
+    for (size_t i = 0; i < pinyin.size(); i += 2)
+        jp += pinyin[i];
+    if (!do_validate(pinyin, jp, word))
+        return "";
+    string table = choose_tbl(pinyin, jp.size());
+    string base_sql = "update {0} set weight = ( select MAX(weight) + 1 from {0} AS sub where sub.key = '{1}') "
+                      "where key = '{1}' and value = '{2}';";
+    string res_sql = fmt::format(base_sql, table, pinyin, word);
+    return res_sql;
+}
+
 int DictionaryUlPb::update_data(string sql_str)
 {
     sqlite3_stmt *stmt;
@@ -669,6 +685,12 @@ int DictionaryUlPb::update_weight_by_word(string word)
 {
     // std::unique_lock lock(mutex_);
     update_data(build_sql_for_updating_word(word));
+    return OK;
+}
+
+int DictionaryUlPb::update_weight_by_pinyin_and_word(string pinyin, string word)
+{
+    update_data(build_sql_for_updating_word(pinyin, word));
     return OK;
 }
 
