@@ -228,7 +228,6 @@ void DictionaryUlPb::filter_with_single_helpcode(           //
 {
     if (candidate_list.empty())
         return;
-    unordered_set<string> wordSet;
     vector<DictionaryUlPb::WordItem> first_helpcode_matched_list;
     vector<DictionaryUlPb::WordItem> last_helpcode_matched_list;
     vector<DictionaryUlPb::WordItem> left_helpcode_matched_list; // 被筛完之后剩下的
@@ -319,48 +318,43 @@ void DictionaryUlPb::filter_with_single_helpcode(           //
  *      阿姨: 阿's helpcode is ek, 姨's helpcode is nr, when we type aayien, 阿姨 will be filtered.
  *
  * @param candidate_list
- * @param filtered_list
+ * @param result_list
  * @param help_codes
  */
 void DictionaryUlPb::filter_with_double_helpcodes(               //
     const std::vector<DictionaryUlPb::WordItem> &candidate_list, //
-    std::vector<DictionaryUlPb::WordItem> &filtered_list,        //
+    std::vector<DictionaryUlPb::WordItem> &result_list,          //
     const std::string &help_codes                                //
 )
 {
     if (candidate_list.empty())
         return;
-    if (PinyinUtil::count_utf8_chars(std::get<1>(candidate_list[0])) == 1)
+
+    for (const auto &cand : candidate_list)
     {
-        /* Single Hanzi */
-        for (const auto &cand : candidate_list)
-        {
-            string word = std::get<1>(cand);
-            string firstHanChar = PinyinUtil::get_first_han_char(word);
-            if (PinyinUtil::helpcode_keymap.count(firstHanChar))
+        string cur_word = std::get<1>(cand);
+        int count = PinyinUtil::count_utf8_chars(cur_word);
+        if (count == 1)
+        { /* 单字 */
+            if (PinyinUtil::helpcode_keymap.count(cur_word))
             {
-                if (PinyinUtil::helpcode_keymap[firstHanChar][0] == help_codes[0] &&
-                    PinyinUtil::helpcode_keymap[firstHanChar][1] == help_codes[1])
+                if (PinyinUtil::helpcode_keymap[cur_word][0] == help_codes[0] &&
+                    PinyinUtil::helpcode_keymap[cur_word][1] == help_codes[1])
                 {
-                    filtered_list.push_back(cand);
+                    result_list.push_back(cand);
                 }
             }
         }
-    }
-    else
-    {
-        /* Multi Hanzi */
-        for (const auto &cand : candidate_list)
-        {
-            string word = std::get<1>(cand);
-            string firstHanChar = PinyinUtil::get_first_han_char(word);
-            string lastHanChar = PinyinUtil::get_last_han_char(word);
-            if (PinyinUtil::helpcode_keymap.count(firstHanChar))
+        else
+        { /* 多字 */
+            string firstHanChar = PinyinUtil::get_first_han_char(cur_word);
+            string lastHanChar = PinyinUtil::get_last_han_char(cur_word);
+            if (PinyinUtil::helpcode_keymap.count(firstHanChar) && PinyinUtil::helpcode_keymap.count(lastHanChar))
             {
                 if (PinyinUtil::helpcode_keymap[firstHanChar][0] == help_codes[0] &&
                     PinyinUtil::helpcode_keymap[lastHanChar][0] == help_codes[1])
                 {
-                    filtered_list.push_back(cand);
+                    result_list.push_back(cand);
                 }
             }
         }
@@ -493,8 +487,11 @@ int DictionaryUlPb::handleVkCode(UINT vk, UINT modifiers_down)
         }
         else if (vk == VK_SPACE || (vk >= '0' && vk <= '9') || vk == VK_RETURN || vk == VK_SHIFT || vk == VK_ESCAPE)
         {
-            // Clear state
-            reset_state();
+            if (vk == VK_RETURN || vk == VK_SHIFT || vk == VK_ESCAPE)
+            { /* 空格键和数字键不要清理状态，因为可能会触发造词 */
+                // Clear state
+                reset_state();
+            }
             return 0;
         }
         else if (vk == VK_TAB)
@@ -516,9 +513,12 @@ int DictionaryUlPb::handleVkCode(UINT vk, UINT modifiers_down)
     // We do not handle other keys currently
     //
 
+    /* 初始状态 */
+    _pure_pinyin_sequence = _pinyin_sequence;
+
     /* Whether in full help mode */
-    _is_help_mode = PinyinUtil::IsFullHelpMode(_pinyin_sequence_with_cases);
-    if (_is_help_mode)
+    _is_full_help_mode = PinyinUtil::IsFullHelpMode(_pinyin_sequence_with_cases);
+    if (_is_full_help_mode)
     {
         _help_mode_raw_pos = _pinyin_sequence.size() - 2;
     }
@@ -528,28 +528,20 @@ int DictionaryUlPb::handleVkCode(UINT vk, UINT modifiers_down)
     }
 
     /* Generate candidate list */
-    if (_is_help_mode && _pinyin_sequence.size() > _help_mode_raw_pos)
+    if (_is_full_help_mode)
     { // 全码辅助，结果只包含根据辅助码筛出来的候选词部分
-        if (PinyinUtil::is_all_complete_pinyin(_pure_pinyin_sequence, _pinyin_segmentation))
-        { /* 双拼的部分是完整的拼音 */
-            _pure_pinyin_sequence = _pinyin_sequence.substr(0, _help_mode_raw_pos);
-            _pinyin_segmentation = PinyinUtil::pinyin_segmentation(_pure_pinyin_sequence);
-            _pinyin_helpcodes = _pinyin_sequence.substr(     //
-                _help_mode_raw_pos,                          //
-                _pinyin_sequence.size() - _help_mode_raw_pos //
-            );
-            _cur_candidate_list = generate_with_helpcodes( //
-                _pure_pinyin_sequence,                     //
-                _pinyin_segmentation,                      //
-                _pinyin_sequence,                          //
-                _pinyin_helpcodes                          //
-            );
-        }
-        else
-        { /* 双拼的部分不是完整的拼音 */
-            _pinyin_segmentation = PinyinUtil::pinyin_segmentation(_pinyin_sequence);
-            _cur_candidate_list = generateSeries(_pinyin_sequence, _pinyin_segmentation);
-        }
+        _pure_pinyin_sequence = _pinyin_sequence.substr(0, _help_mode_raw_pos);
+        _pinyin_segmentation = PinyinUtil::pinyin_segmentation(_pure_pinyin_sequence);
+        _pinyin_helpcodes = _pinyin_sequence.substr(     //
+            _help_mode_raw_pos,                          //
+            _pinyin_sequence.size() - _help_mode_raw_pos //
+        );
+        _cur_candidate_list = generate_with_helpcodes( //
+            _pure_pinyin_sequence,                     //
+            _pinyin_segmentation,                      //
+            _pinyin_sequence,                          //
+            _pinyin_helpcodes                          //
+        );
     }
     else
     {
@@ -635,6 +627,8 @@ int DictionaryUlPb::create_word(string pinyin, string word)
         return OK;
     }
     insert_data(build_sql_for_inserting_word(pinyin, jp, word));
+    /* 插入新词之后要清理缓存 */
+    reset_cache();
     return OK;
 }
 
@@ -642,6 +636,22 @@ string DictionaryUlPb::build_sql_for_updating_word(string word)
 {
     int han_cnt = PinyinUtil::cnt_han_chars(word);
     string pinyin = GlobalIME::pinyin.substr(0, han_cnt * 2);
+    string jp;
+    for (size_t i = 0; i < pinyin.size(); i += 2)
+        jp += pinyin[i];
+    if (!do_validate(pinyin, jp, word))
+        return "";
+    string table = choose_tbl(pinyin, jp.size());
+    string base_sql = "update {0} set weight = ( select MAX(weight) + 1 from {0} AS sub where sub.key = '{1}') "
+                      "where key = '{1}' and value = '{2}';";
+    string res_sql = fmt::format(base_sql, table, pinyin, word);
+    return res_sql;
+}
+
+string DictionaryUlPb::build_sql_for_updating_word(string pinyin, string word)
+{
+    int han_cnt = PinyinUtil::cnt_han_chars(word);
+    pinyin = pinyin.substr(0, han_cnt * 2);
     string jp;
     for (size_t i = 0; i < pinyin.size(); i += 2)
         jp += pinyin[i];
@@ -675,6 +685,12 @@ int DictionaryUlPb::update_weight_by_word(string word)
 {
     // std::unique_lock lock(mutex_);
     update_data(build_sql_for_updating_word(word));
+    return OK;
+}
+
+int DictionaryUlPb::update_weight_by_pinyin_and_word(string pinyin, string word)
+{
+    update_data(build_sql_for_updating_word(pinyin, word));
     return OK;
 }
 
@@ -926,7 +942,7 @@ string DictionaryUlPb::search_sentence_from_ime_engine(const string &user_pinyin
 
 void DictionaryUlPb::reset_state()
 {
-    _is_help_mode = false;
+    _is_full_help_mode = false;
     _help_mode_raw_pos = 0;
     _kb_input_sequence.clear();
     _pinyin_sequence = "";
@@ -942,10 +958,47 @@ void DictionaryUlPb::reset_cache()
     _cached_buffer.clear();
     _cached_buffer_sgl.clear();
     _cached_buffer_dbl.clear();
+    _cached_buffer_series.clear();
 }
 
 bool DictionaryUlPb::is_all_complete_pinyin()
 {
     bool res = PinyinUtil::is_all_complete_pinyin(_pinyin_sequence, _pinyin_segmentation);
+    return res;
+}
+
+bool DictionaryUlPb::is_all_complete_pure_pinyin()
+{
+    bool res = PinyinUtil::is_all_complete_pinyin( //
+        _pure_pinyin_sequence,                     //
+        PinyinUtil::pinyin_segmentation(_pure_pinyin_sequence));
+    return res;
+}
+
+std::string DictionaryUlPb::get_pinyin_segmentation_with_cases()
+{
+    string res;
+    int index = 0;
+    for (size_t i = 0; i < _pinyin_segmentation.size(); ++i)
+    {
+        if (_pinyin_segmentation[i] == '\'')
+        {
+            res += _pinyin_segmentation[i];
+            continue;
+        }
+        else
+        {
+            if (_pinyin_segmentation[i] == _pinyin_sequence_with_cases[index])
+            {
+                res += _pinyin_segmentation[i];
+            }
+            else if (_pinyin_segmentation[i] == _pinyin_sequence_with_cases[index] + ('a' - 'A'))
+            {
+                res += _pinyin_sequence_with_cases[index];
+            }
+        }
+        index += 1;
+    }
+
     return res;
 }

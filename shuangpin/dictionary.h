@@ -47,6 +47,8 @@ class DictionaryUlPb
     int create_word(std::string pinyin, std::string word);
     // 一次到顶
     int update_weight_by_word(std::string word);
+    // 一次到顶
+    int update_weight_by_pinyin_and_word(std::string pinyin, std::string word);
 
     /*
       Return: list of complete item data of database table
@@ -95,6 +97,7 @@ class DictionaryUlPb
     std::string build_sql_for_checking_word(std::string key, std::string jp, std::string value);
     std::string build_sql_for_inserting_word(std::string key, std::string jp, std::string value);
     std::string build_sql_for_updating_word(std::string value);
+    std::string build_sql_for_updating_word(std::string pinyin, std::string word);
     std::string choose_tbl(const std::string &sp_str, size_t word_len);
     bool do_validate(std::string key, std::string jp, std::string value);
 
@@ -103,7 +106,7 @@ class DictionaryUlPb
     std::shared_mutex mutex_; // Read-write separation lock
 
     // Whether in full help mode
-    bool _is_help_mode = false;
+    bool _is_full_help_mode = false;
     // Localtion of starting position
     int _help_mode_raw_pos = 0;           // Start from pos, e.g. 妮: ninv: 2
     std::string _pinyin_helpcodes = "";   // Help codes
@@ -126,13 +129,13 @@ class DictionaryUlPb
 
   public:
     // Getters and setters
-    bool get_help_mode()
+    bool get_full_help_mode()
     {
-        return this->_is_help_mode;
+        return this->_is_full_help_mode;
     }
-    void set_help_mode(bool is_help_mode)
+    void set_full_help_mode(bool is_full_help_mode)
     {
-        this->_is_help_mode = is_help_mode;
+        this->_is_full_help_mode = is_full_help_mode;
     }
 
     int get_help_mode_raw_pos()
@@ -164,9 +167,14 @@ class DictionaryUlPb
         this->_pinyin_sequence_with_cases = pinyin_sequence;
     }
 
-    const std::string &get_segmentation_pinyin()
+    const std::string &get_pinyin_segmentation()
     {
         return this->_pinyin_segmentation;
+    }
+
+    const std::string &get_pure_pinyin_sequence()
+    {
+        return this->_pure_pinyin_sequence;
     }
 
     const std::vector<DictionaryUlPb::WordItem> &get_cur_candiate_list()
@@ -175,6 +183,8 @@ class DictionaryUlPb
     }
 
     bool is_all_complete_pinyin();
+    bool is_all_complete_pure_pinyin();
+    std::string get_pinyin_segmentation_with_cases();
 
     void reset_state();
     void reset_cache();
