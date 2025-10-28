@@ -14,6 +14,7 @@
 #include "../googlepinyinime-rev/src/include/pinyinime.h"
 #include "spdlog/spdlog.h"
 #include <boost/locale/encoding_utf.hpp>
+#include <boost/algorithm/string.hpp>
 #include <fmt/xchar.h>
 #include <Windows.h>
 
@@ -980,10 +981,28 @@ std::string DictionaryUlPb::get_pinyin_segmentation_with_cases()
 {
     string res;
     int index = 0;
-    static int cnt = 0;
-    OutputDebugString(
-        fmt::format(L"_pinyin_segmentation: {} {}\n", CommonUtils::string_to_wstring(_pinyin_segmentation), ++cnt)
-            .c_str());
+
+    if (_pinyin_segmentation.empty() || _pinyin_sequence_with_cases.empty())
+        return res;
+
+    string extracted_pinyin = "";
+    for (size_t i = 0; i < _pinyin_segmentation.size(); ++i)
+    {
+        if (_pinyin_segmentation[i] == '\'')
+        {
+            continue;
+        }
+        else
+        {
+            extracted_pinyin += _pinyin_segmentation[i];
+        }
+    }
+
+    if (extracted_pinyin != boost::algorithm::to_lower_copy(_pinyin_sequence_with_cases))
+    {
+        return res;
+    }
+
     for (size_t i = 0; i < _pinyin_segmentation.size(); ++i)
     {
         if (_pinyin_segmentation[i] == '\'')
