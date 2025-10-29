@@ -49,6 +49,7 @@ class DictionaryUlPb
     int update_weight_by_word(std::string word);
     // 一次到顶
     int update_weight_by_pinyin_and_word(std::string pinyin, std::string word);
+    int delete_by_pinyin_and_word(std::string pinyin, std::string word);
 
     /*
       Return: list of complete item data of database table
@@ -92,12 +93,14 @@ class DictionaryUlPb
     int check_data(std::string sql_str);
     int insert_data(std::string sql_str);
     int update_data(std::string sql_str);
+    int delete_data(std::string sql_str);
     std::pair<std::string, bool> build_sql(const std::string &sp_str, std::vector<std::string> &pinyin_list);
     std::string build_sql_for_creating_word(const std::string &sp_str);
     std::string build_sql_for_checking_word(std::string key, std::string jp, std::string value);
     std::string build_sql_for_inserting_word(std::string key, std::string jp, std::string value);
     std::string build_sql_for_updating_word(std::string value);
     std::string build_sql_for_updating_word(std::string pinyin, std::string word);
+    std::string build_sql_for_deleting_word(std::string pinyin, std::string word);
     std::string choose_tbl(const std::string &sp_str, size_t word_len);
     bool do_validate(std::string key, std::string jp, std::string value);
 

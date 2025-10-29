@@ -666,7 +666,37 @@ string DictionaryUlPb::build_sql_for_updating_word(string pinyin, string word)
     return res_sql;
 }
 
+string DictionaryUlPb::build_sql_for_deleting_word(string pinyin, string word)
+{
+    string jp;
+    for (size_t i = 0; i < pinyin.size(); i += 2)
+        jp += pinyin[i];
+    if (!do_validate(pinyin, jp, word))
+        return "";
+    string table = choose_tbl(pinyin, jp.size());
+    string base_sql = "delete from {0} where key = '{1}' and value = '{2}';";
+    string res_sql = fmt::format(base_sql, table, pinyin, word);
+    return res_sql;
+}
+
 int DictionaryUlPb::update_data(string sql_str)
+{
+    sqlite3_stmt *stmt;
+    int exit = sqlite3_prepare_v2(db, sql_str.c_str(), -1, &stmt, 0);
+    if (exit != SQLITE_OK)
+    {
+        spdlog::error("sqlite3_prepare_v2 error.");
+    }
+    exit = sqlite3_step(stmt);
+    if (exit != SQLITE_DONE)
+    {
+        spdlog::error("sqlite3_step error.");
+    }
+    sqlite3_finalize(stmt);
+    return 0;
+}
+
+int DictionaryUlPb::delete_data(string sql_str)
 {
     sqlite3_stmt *stmt;
     int exit = sqlite3_prepare_v2(db, sql_str.c_str(), -1, &stmt, 0);
@@ -693,6 +723,13 @@ int DictionaryUlPb::update_weight_by_word(string word)
 int DictionaryUlPb::update_weight_by_pinyin_and_word(string pinyin, string word)
 {
     update_data(build_sql_for_updating_word(pinyin, word));
+    return OK;
+}
+
+int DictionaryUlPb::delete_by_pinyin_and_word(string pinyin, string word)
+{
+
+    delete_data(build_sql_for_deleting_word(pinyin, word));
     return OK;
 }
 
