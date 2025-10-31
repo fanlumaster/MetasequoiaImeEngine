@@ -1,6 +1,6 @@
-# MetasequoiaIme Engine
+# Metasequoia IME Engine(水杉输入法引擎)
 
-General IME engine for [MetasequoiaImeTsf](https://github.com/fanlumaster/MetasequoiaImeTsf).
+General IME engine for [MetaIME](https://github.com/fanlumaster/MetaIME).
 
 ## How to build
 
