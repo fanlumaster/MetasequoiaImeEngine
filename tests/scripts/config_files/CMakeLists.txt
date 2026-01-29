@@ -16,7 +16,7 @@ add_definitions(
 add_compile_options(/Zc:__cplusplus)
 
 # Boost
-set(Boost_ROOT "C:/Users/19833/scoop/apps/boost/1.88.0")
+set(Boost_ROOT "C:/Users/sonnycalcr/scoop/apps/boost/current")
 set (Boost_USE_STATIC_LIBS ON)
 find_package(Boost REQUIRED COMPONENTS locale)
 include_directories(${Boost_INCLUDE_DIRS})
