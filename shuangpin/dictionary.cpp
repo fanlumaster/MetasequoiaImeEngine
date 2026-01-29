@@ -873,24 +873,23 @@ pair<string, bool> DictionaryUlPb::build_sql(const string &sp_str, vector<string
     else if (jp_cnt == 1) // Only one jianpin
     {
         string sql_param0("");
-        string sql_param1("");
         for (vector<string>::size_type i = 0; i < pinyin_list.size(); i++)
         {
             if (pinyin_list[i].size() == 1)
             {
-                sql_param0 = sql_param0 + pinyin_list[i] + "a";
-                sql_param1 = sql_param1 + pinyin_list[i] + "z";
+                sql_param0 = sql_param0 + pinyin_list[i] + "_";
             }
             else
             {
                 sql_param0 += pinyin_list[i];
-                sql_param1 += pinyin_list[i];
             }
         }
-        sql = fmt::format(                                                                           //
-            "select * from {0} where key >= '{1}' and key <= '{2}' order by weight desc limit {3};", //
-            table, sql_param0, sql_param1, default_candicate_page_limit                              //
-        );
+        sql =
+            fmt::format( //
+                         // "select * from {0} where key >= '{1}' and key <= '{2}' order by weight desc limit {3};", //
+                "select * from {0} where key like '{1}' order by weight desc limit {2};", //
+                table, sql_param0, default_candicate_page_limit                           //
+            );
     }
     else // Neithor pure quanpin, nor pure jianpin, and count of jianpin is more than 1
     {
