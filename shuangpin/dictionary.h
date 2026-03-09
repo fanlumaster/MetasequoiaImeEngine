@@ -42,7 +42,7 @@ class DictionaryUlPb
         const std::string &pinyin_sequence,          //
         const std::string &help_codes                //
     );
-    int handleVkCode(UINT vk, UINT modifiers_down);
+    int handleVkCode(UINT vk, UINT modifiers_down, WCHAR wch = 0);
     std::vector<WordItem> generate_for_creating_word(const std::string code);
     int create_word(std::string pinyin, std::string word);
     // 一次到顶

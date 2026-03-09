@@ -474,18 +474,34 @@ void DictionaryUlPb::generate_for_single_char(vector<DictionaryUlPb::WordItem> &
  * @param vk
  * @return int
  */
-int DictionaryUlPb::handleVkCode(UINT vk, UINT modifiers_down)
+int DictionaryUlPb::handleVkCode(UINT vk, UINT modifiers_down, WCHAR wch)
 {
     if (vk != 0)
     { /* 0 是造词过程中的 dummy code */
         _kb_input_sequence.push_back(vk);
         if (vk >= 'A' && vk <= 'Z')
         {
-            _pinyin_sequence += char(vk + ('a' - 'A'));
-            if (modifiers_down >> 0 & 1u)
-                _pinyin_sequence_with_cases += char(vk);
+            const char lowerAlpha = static_cast<char>(vk + ('a' - 'A'));
+            _pinyin_sequence += lowerAlpha;
+
+            // Prefer the real typed character from TSF side so CapsLock/Shift combinations are preserved.
+            if (wch >= L'A' && wch <= L'Z')
+            {
+                _pinyin_sequence_with_cases += static_cast<char>(wch);
+            }
+            else if (wch >= L'a' && wch <= L'z')
+            {
+                _pinyin_sequence_with_cases += static_cast<char>(wch);
+            }
+            else if (modifiers_down >> 0 & 1u)
+            {
+                // Fallback for callers that don't provide wch.
+                _pinyin_sequence_with_cases += static_cast<char>(vk);
+            }
             else
-                _pinyin_sequence_with_cases += char(vk + ('a' - 'A'));
+            {
+                _pinyin_sequence_with_cases += lowerAlpha;
+            }
         }
         else if (vk == VK_SPACE || (vk >= '0' && vk <= '9') || vk == VK_RETURN || vk == VK_SHIFT || vk == VK_ESCAPE)
         {
