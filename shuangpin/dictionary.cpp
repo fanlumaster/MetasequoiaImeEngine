@@ -58,7 +58,8 @@ DictionaryUlPb::DictionaryUlPb()
     : _kb_input_sequence(100), _cached_buffer(128), _cached_buffer_sgl(128), _cached_buffer_dbl(128),
       _cached_buffer_series(128)
 {
-    ime_pinyin::im_set_max_lens(64, 32);
+    // 最多可以输出 64 个汉字，拼音最多可以接受 128 个字符
+    ime_pinyin::im_set_max_lens(128, 64);
     bool _res = ime_pinyin::im_open_decoder(                                                                          //
         (fmt::format("{}\\{}\\dict_pinyin.dat", PinyinUtil::get_local_appdata_path(), PinyinUtil::app_name)).c_str(), //
         (fmt::format("{}\\{}\\user_dict.dat", PinyinUtil::get_local_appdata_path(), PinyinUtil::app_name)).c_str()    //
