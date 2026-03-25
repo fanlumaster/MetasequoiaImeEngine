@@ -601,6 +601,20 @@ int DictionaryUlPb::handleVkCode(UINT vk, UINT modifiers_down, WCHAR wch)
     return 0;
 }
 
+std::string DictionaryUlPb::get_quanpin()
+{
+
+    string quanpin_str = PinyinUtil::convert_seg_shuangpin_to_seg_complete_pinyin(_pinyin_segmentation);
+    quanpin_str.erase(std::remove(quanpin_str.begin(), quanpin_str.end(), '\''), quanpin_str.end());
+    return quanpin_str;
+}
+
+std::string DictionaryUlPb::get_quanpin_seg()
+{
+    string quanpin_str = PinyinUtil::convert_seg_shuangpin_to_seg_complete_pinyin(_pinyin_segmentation);
+    return quanpin_str;
+}
+
 void DictionaryUlPb::filter_key_value_list(                       //
     vector<DictionaryUlPb::WordItem> &candidate_list,             //
     const vector<string> &pinyin_list,                            //
@@ -1003,6 +1017,7 @@ void DictionaryUlPb::reset_state()
     _pinyin_sequence = "";
     _pinyin_sequence_with_cases = "";
     _pure_pinyin_sequence = "";
+    _pinyin_segmentation = "";
     _help_codes_sequence.fill(0);
     _cur_candidate_list.clear();
     _cur_page_candidate_list.clear();

@@ -189,6 +189,9 @@ class DictionaryUlPb
     bool is_all_complete_pure_pinyin();
     std::string get_pinyin_segmentation_with_cases();
 
+    std::string get_quanpin();
+    std::string get_quanpin_seg();
+
     void reset_state();
     void reset_cache();
 };
