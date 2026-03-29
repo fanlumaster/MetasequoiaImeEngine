@@ -185,6 +185,8 @@ class DictionaryUlPb
         return this->_cur_candidate_list;
     }
 
+    int insert_word_to_cached_buffer_series(const std::string &pinyin, const std::string &word);
+
     bool is_all_complete_pinyin();
     bool is_all_complete_pure_pinyin();
     std::string get_pinyin_segmentation_with_cases();

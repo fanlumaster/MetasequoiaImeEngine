@@ -1031,6 +1031,32 @@ void DictionaryUlPb::reset_cache()
     _cached_buffer_series.clear();
 }
 
+int DictionaryUlPb::insert_word_to_cached_buffer_series(const std::string &pinyin, const std::string &word)
+{
+    OutputDebugString(fmt::format(L"[msime]: pinyin: {}, word: {}", CommonUtils::string_to_wstring(pinyin),
+                                  CommonUtils::string_to_wstring(word))
+                          .c_str());
+    if (auto opt = _cached_buffer_series.get(pinyin))
+    {
+        OutputDebugString(fmt::format(L"[msime]: fasjklfjsdalkjfklsdajklfjdsa").c_str());
+        auto list = opt.value();
+        if (list.size() >= 1)
+        {
+            list.insert(list.begin() + 1, make_tuple(pinyin, word, 1));
+        }
+        else
+        {
+            list.push_back(make_tuple(pinyin, word, 1));
+        }
+        _cached_buffer_series.insert(pinyin, list);
+    }
+    else
+    {
+        _cached_buffer_series.insert(pinyin, vector<WordItem>{make_tuple(pinyin, word, 1)});
+    }
+    return 0;
+}
+
 bool DictionaryUlPb::is_all_complete_pinyin()
 {
     bool res = PinyinUtil::is_all_complete_pinyin(_pinyin_sequence, _pinyin_segmentation);
