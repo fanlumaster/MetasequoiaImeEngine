@@ -1,4 +1,7 @@
 cmake_minimum_required(VERSION 3.25.0)
+
+cmake_policy(SET CMP0167 OLD)
+
 project(MetasequoiaImeEngineTest VERSION 1.0 LANGUAGES CXX)
 
 # Specify the C++ standard
