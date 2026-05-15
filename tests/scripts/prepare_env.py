@@ -22,7 +22,9 @@ vcpkg_include = normpath(
 utfcpp_path = normpath(os.path.join(MetasequoiaImeEngine_root, "utfcpp", "source"))
 boost_path = normpath(os.path.join(user_home, "scoop", "apps", "boost", "current"))
 
+#
 # project_root/.clangd
+#
 dot_clangd_new_lines = [
     f'      "-I{MetasequoiaImeEngine_root}",\n',
     f'      "-I{vcpkg_include}",\n',
@@ -39,7 +41,9 @@ lines[6:10] = dot_clangd_new_lines
 with open(dot_clangd_output_file, "w", encoding="utf-8") as f:
     f.writelines(lines)
 
+#
 # project_root/tests/CMakeLists.txt
+#
 CMakeLists_new_line = (
     f'set(Boost_ROOT "{normpath(user_home)}/scoop/apps/boost/current")\n'
 )
@@ -49,11 +53,13 @@ CMakeLists_file = os.path.join(
 CMakeLists_output_file = os.path.join(MetasequoiaImeEngine_root, "tests", "CMakeLists.txt")
 with open(CMakeLists_file, "r", encoding="utf-8") as f:
     lines = f.readlines()
-lines[18] = CMakeLists_new_line
+lines[21] = CMakeLists_new_line
 with open(CMakeLists_output_file, "w", encoding="utf-8") as f:
     f.writelines(lines)
 
+#
 # CMakePresets.json
+#
 CMakePresets_new_line_8 = (
     f'        "VCPKG_ROOT": "{normpath(user_home)}/scoop/apps/vcpkg/current/"\n'
 )
