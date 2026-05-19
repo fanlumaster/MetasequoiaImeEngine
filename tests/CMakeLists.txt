@@ -36,7 +36,12 @@ include_directories("../utfcpp/source/")
 set(MY_EXECUTABLE_NAME "imetest")
 set(
     SOURCE_FILES
-    "./src/test_shuangpin.cpp"
+    "./src/test_pinyin.cpp"
+    "../core/ime_session.cpp"
+    "../providers/pinyin_candidate_provider.cpp"
+    "../providers/provider_registry.cpp"
+    "../schemes/shuangpin_scheme.cpp"
+    "../schemes/quanpin_scheme.cpp"
     "../shuangpin/common_utils.cpp"
     "../shuangpin/dictionary.cpp"
     "../shuangpin/pinyin_utils.cpp"
